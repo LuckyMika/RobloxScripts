@@ -1,6 +1,3 @@
--- Author: Me (ShortMika)
--- Game Link: https://www.roblox.com/games/5276547532/Hard-Obby-320-Levels
-
 local cpFolder = game.Workspace.Checkpoints
 local level = game.Players.LocalPlayer.leaderstats.Level
 local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
@@ -30,26 +27,28 @@ Indicator2.TextStrokeColor3 = Color3.new(1, 1, 1)
 
 Indicator.Activated:Connect(
 function()
+    if level.Value ~= 270 then
+        local newLevel = level.Value + 1
+        local cp = cpFolder[newLevel]
 
-local newLevel = level.Value + 1
-local cp = cpFolder[newLevel]
-
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cp.CFrame * CFrame.new(0,3,0)
-
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cp.CFrame * CFrame.new(0,3,0)
+    else
+        Indicator.Text = "You have beaten all the levels!"
+    end
 end)
 
 Indicator2.Activated:Connect(
 function()
-loop = not loop
-while loop do
-        
-    local newLevel = level.Value + 1
-    local cp = cpFolder[newLevel]
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cp.CFrame * CFrame.new(0,3,0)
-    wait(3)
-end
-
-
-
-
+    if level.Value ~= 270 then
+        loop = not loop
+        Indicator2.Text = "Loop" .. (loop and "On" or "Off")
+        while loop do
+            local newLevel = level.Value + 1
+            local cp = cpFolder[newLevel]
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cp.CFrame * CFrame.new(0,3,0)
+            wait(3)
+        end
+    else
+        Indicator.Text = "You have beaten all the levels!"
+    end
 end)
