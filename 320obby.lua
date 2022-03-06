@@ -1,10 +1,13 @@
+-- Author: Me (ShortMika)
+-- Game Link: https://www.roblox.com/games/5276547532/Hard-Obby-320-Levels
+
 local cpFolder = game.Workspace.Checkpoints
 local level = game.Players.LocalPlayer.leaderstats.Level
 local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
 local Indicator = Instance.new("TextButton", ScreenGui)
 local Indicator2 = Instance.new("TextButton", ScreenGui)
 local loop = false
-print("Hi")
+
 Indicator.Text = "Next Level"
 Indicator.AnchorPoint = Vector2.new(0, 1)
 Indicator.Position = UDim2.new(0, 0, 1, 0)
