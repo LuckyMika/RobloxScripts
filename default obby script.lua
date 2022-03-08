@@ -37,6 +37,6 @@ function autoFarm()
             local newLevel = level.Value + 1
             local cp = cpFolder[newLevel]
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cp.CFrame * CFrame.new(0,3,0)
-            wait(0.5)
+            wait(timeToWait)
     end
 end
