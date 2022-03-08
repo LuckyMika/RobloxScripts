@@ -1,54 +1,46 @@
 local cpFolder = game.Workspace.Checkpoints
-local level = game.Players.LocalPlayer.leaderstats.Level
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-local Indicator = Instance.new("TextButton", ScreenGui)
-local Indicator2 = Instance.new("TextButton", ScreenGui)
-local loop = false
+local level = game.Players.LocalPlayer.leaderstats.Stage
 
-Indicator.Text = "Next Level"
-Indicator.AnchorPoint = Vector2.new(0, 1)
-Indicator.Position = UDim2.new(0, 0, 1, 0)
-Indicator.Size = UDim2.new(0, 200, 0, 50)
-Indicator.BackgroundTransparency = 1
-Indicator.TextScaled = true
-Indicator.TextStrokeTransparency = 0
-Indicator.TextColor3 = Color3.new(0, 0, 0)
-Indicator.TextStrokeColor3 = Color3.new(1, 1, 1)
 
-Indicator2.Text = "Loop: OFF"
-Indicator2.AnchorPoint = Vector2.new(0, 1)
-Indicator2.Position = UDim2.new(0, 0, 0.9, 0)
-Indicator2.Size = UDim2.new(0, 200, 0, 50)
-Indicator2.BackgroundTransparency = 1
-Indicator2.TextScaled = true
-Indicator2.TextStrokeTransparency = 0
-Indicator2.TextColor3 = Color3.new(0, 0, 0)
-Indicator2.TextStrokeColor3 = Color3.new(1, 1, 1)
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Obby Gui", "Sentinel")
+local Tab = Window:NewTab("Teleportation")
+local Section = Tab:NewSection("Wanna see the end?")
 
-Indicator.Activated:Connect(
-function()
-    if level.Value ~= 270 then
+
+getgenv().autoFarm = false
+
+Section:NewButton("Next Level", "Teleports you to the next level", function ()
+    print(level.Value)
+    if level.Value == "200" then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").RestartPortal.Portal.CFrame
+        wait()
+        local Event = game:GetService("ReplicatedStorage").Remotes.ToServer.RestartPlayer
+        Event:FireServer()
+    else
         local newLevel = level.Value + 1
         local cp = cpFolder[newLevel]
-
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cp.CFrame * CFrame.new(0,3,0)
-    else
-        Indicator.Text = "You have beaten all the levels!"
     end
 end)
 
-Indicator2.Activated:Connect(
-function()
-    if level.Value ~= 270 then
-        loop = not loop
-        Indicator2.Text = "Loop" .. (loop and "On" or "Off")
-        while loop do
+Section:NewToggle("Auto Farm", "Auto completes all the levels", function (b)
+    getgenv().autoFarm = b
+    spawn(autoFarm)
+end)
+
+function autoFarm()
+    while getgenv().autoFarm do
+        if level.Value == "200" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").RestartPortal.Portal.CFrame
+            wait()
+            local Event = game:GetService("ReplicatedStorage").Remotes.ToServer.RestartPlayer
+            Event:FireServer()
+        else
             local newLevel = level.Value + 1
             local cp = cpFolder[newLevel]
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cp.CFrame * CFrame.new(0,3,0)
-            wait(3)
+            wait(0.5)
         end
-    else
-        Indicator.Text = "You have beaten all the levels!"
     end
-end)
+end
