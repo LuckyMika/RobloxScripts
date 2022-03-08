@@ -3,14 +3,14 @@
 --
 --              local cpFolder = game.Workspace.Checkpoints
 --              local level = game.Players.LocalPlayer.leaderstats.Stage
+--              local timeToWait = 1
 --
 -- in your script and then load the following code with loadstring.
 --
 -- If you need more help, message me on discord.
 
-local cpFolder = game.Workspace.Checkpoints
-local level = game.Players.LocalPlayer.leaderstats.Stage
-if cpFolder == nil and level == nil then
+
+if cpFolder == nil or level == nil or timeToWait == nilthen
     game.Players.LocalPlayer:Kick("You didn't provide the Checkpoint Folder or Level")
 end
 
