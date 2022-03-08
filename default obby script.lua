@@ -22,10 +22,6 @@ local Section = Tab:NewSection("Wanna see the end?")
 getgenv().autoFarm = false
 
 Section:NewButton("Next Level", "Teleports you to the next level", function ()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").RestartPortal.Portal.CFrame
-        wait()
-        local Event = game:GetService("ReplicatedStorage").Remotes.ToServer.RestartPlayer
-        Event:FireServer()
         local newLevel = level.Value + 1
         local cp = cpFolder[newLevel]
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cp.CFrame * CFrame.new(0,3,0)
