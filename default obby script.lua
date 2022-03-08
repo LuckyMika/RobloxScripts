@@ -10,7 +10,7 @@
 -- If you need more help, message me on discord.
 
 
-if cpFolder == nil or level == nil or timeToWait == nilthen
+if cpFolder == nil or level == nil or timeToWait == nil then
     game.Players.LocalPlayer:Kick("You didn't provide the Checkpoint Folder or Level")
 end
 
