@@ -24,7 +24,7 @@ getgenv().autoFarm = false
 Section:NewButton("Next Level", "Teleports you to the next level", function ()
         local newLevel = level.Value + 1
         local cp = cpFolder[newLevel]
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cp.CFrame * CFrame.new(0,3,0)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cp.CFrame * CFrame.new(0,6,0)
 end)
 
 Section:NewToggle("Auto Complete", "Auto completes all the levels for you", function (b)
@@ -36,7 +36,7 @@ function autoFarm()
     while getgenv().autoFarm do
             local newLevel = level.Value + 1
             local cp = cpFolder[newLevel]
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cp.CFrame * CFrame.new(0,3,0)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cp.CFrame * CFrame.new(0,6,0)
             wait(timeToWait)
     end
 end
