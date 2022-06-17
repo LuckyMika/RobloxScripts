@@ -75,6 +75,74 @@ function utility:GetBodypart(Player, Part)
     end
 end
 
+function utility:getposlist2(list)
+    local top = math.huge
+    local bottom = -math.huge
+    local right = -math.huge
+    local left = math.huge
+
+    for i, v in pairs(list) do
+        top = (top > v.Y) and v.Y or top
+        bottom = (bottom < v.Y) and v.Y or bottom
+        left = (left > v.X) and v.X or left
+        right = (right < v.X) and v.X or right
+    end
+
+    return {
+        pos = {
+            topLeft = Vector2.new(left, top),
+            topRight = Vector2.new(right, top),
+            bottomLeft = Vector2.new(left, bottom),
+            middle = Vector2.new((right - left) / 2 + left, (bottom - top) / 2 + top),
+            bottomRight = Vector2.new(right, bottom)
+        },
+        quad = {
+            PointA = Vector2.new(right, top),
+            PointB = Vector2.new(left, top),
+            PointC = Vector2.new(left, bottom),
+            PointD = Vector2.new(right, bottom)
+        }
+    }
+end
+
+function utility:wtvp(p) -- vector
+    p = workspace.CurrentCamera:WorldToViewportPoint(p)
+    return Vector2.new(p.X, p.Y), p.Z
+end 
+
+function utility:get2dcorner(cf, s)
+    local Top = s.Y / 2
+    local Bottom = -s.Y / 2
+    local Front = -s.Z / 2
+    local Back = s.Z / 2
+    local Left = -s.X / 2
+    local Right = s.X / 2
+
+    return {
+        LeftTopFront = utility:wtvp((cf * CFrame.new(Vector3.new(Left, Top, Front))).Position),
+        RightTopFront = utility:wtvp((cf * CFrame.new(Vector3.new(Right, Top, Front))).Position),
+        LeftBottomFront = utility:wtvp((cf * CFrame.new(Vector3.new(Left, Bottom, Front))).Position),
+        RightBottomFront = utility:wtvp((cf * CFrame.new(Vector3.new(Right, Bottom, Front))).Position),
+        LeftTopBack = utility:wtvp((cf * CFrame.new(Vector3.new(Left, Top, Back))).Position),
+        RightTopBack = utility:wtvp((cf * CFrame.new(Vector3.new(Right, Top, Back))).Position),
+        LeftBottomBack = utility:wtvp((cf * CFrame.new(Vector3.new(Left, Bottom, Back))).Position),
+        RightBottomBack = utility:wtvp((cf * CFrame.new(Vector3.new(Right, Bottom, Back))).Position)
+    }
+end
+
+function utility:GetBoundingBox(Character)
+    local Data = {}
+
+    for i,v in pairs(Character:GetChildren()) do
+        if (v:IsA("BasePart") and v.Name ~= "HumanoidRootPart") then
+            for i2, v2 in pairs(utility:get2dcorner(v.CFrame, v.Size)) do
+                table.insert(Data, v2)
+            end
+        end
+    end
+
+    return utility:getposlist2(Data)
+end
 
 local library = {}
 esp_settings = {}
@@ -259,12 +327,8 @@ function AddToRenderList(plr)
         name.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.NameTeamColor or esp_settings.Colors.NameEnemyColor
         name.Font = esp_settings.Other.NameFontFamily
 
-        local box = Drawing.new("Quad")
+        local box = Drawing.new("Square")
         box.Visible = false
-        box.PointA = Vector2.new(0, 0)
-        box.PointB = Vector2.new(0, 0)
-        box.PointC = Vector2.new(0, 0)
-        box.PointD = Vector2.new(0, 0)
         box.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.BoxTeamColor or esp_settings.Colors.BoxEnemyColor
         box.Thickness = esp_settings.Other.BoxesThickness
         box.Transparency = esp_settings.Other.BoxesTransparency
@@ -285,7 +349,7 @@ function AddToRenderList(plr)
         distance.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.DistanceTeamColor or esp_settings.Colors.DistanceEnemyColor
         distance.Font = esp_settings.Other.DistanceFontFamily
 
-        local healthbar = Drawing.new("Quad")
+        local healthbar = Drawing.new("Square")
         healthbar.Visible = false
         healthbar.Filled = true
         healthbar.Color = esp_settings.Colors.HealthbarEmptyColor:lerp(esp_settings.Colors.HealthbarFullColor, utility:GetHealth(plr)/100);
@@ -394,41 +458,15 @@ function AddToRenderList(plr)
 
             if esp_settings.Visuals.Boxes then
                 if utility:IsAlive(plr) then
+                    local data = utility:GetBoundingBox(utility:GetCharacter(plr))
+                    local boxpos = Vector2.new(math.floor(data.pos.bottomRight.X), math.floor(data.pos.bottomRight.Y))
+                    local Width, Height = math.floor(data.pos.topLeft.X - data.pos.topRight.X), math.floor(data.pos.topLeft.Y - data.pos.bottomLeft.Y)
+                    local boxsize = Vector2.new(Width, Height)
                     local pos, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
                     if onscreen then
-                        local points = {}
-                        local c = 0
-                        for _,v in pairs(client.replication.bodyparts[plr]) do
-                            if v:IsA("BasePart") then
-                                c = c + 1
-                                local p = Camera:WorldToViewportPoint(v.Position)
-                                if v.Name == "torso" then
-                                    p = Camera:WorldToViewportPoint((v.CFrame * CFrame.new(0, 0, -v.Size.Z)).p)
-                                elseif v.Name == "head" then
-                                    p = Camera:WorldToViewportPoint((v.CFrame * CFrame.new(0, v.Size.Y/2, v.Size.Z/1.25)).p)
-                                elseif string.match(v.Name, "Left") then
-                                    p = Camera:WorldToViewportPoint((v.CFrame * CFrame.new(-v.Size.X/2, 0, 0)).p)
-                                elseif string.match(v.Name, "Right") then
-                                    p = Camera:WorldToViewportPoint((v.CFrame * CFrame.new(v.Size.X/2, 0, 0)).p)
-                                end
-                                points[c] = p
-                            end
-                        end
-                        local Left = GetClosest(points, Vector2.new(0, pos.Y))
-                        local Right = GetClosest(points, Vector2.new(Camera.ViewportSize.X, pos.Y))
-                        local Top = GetClosest(points, Vector2.new(pos.X, 0))
-                        local Bottom = GetClosest(points, Vector2.new(pos.X, Camera.ViewportSize.Y))
-    
-                        if Left ~= nil and Right ~= nil and Top ~= nil and Bottom ~= nil then
-                            box.PointA = Vector2.new(Right.X, Top.Y)
-                            box.PointB = Vector2.new(Left.X, Top.Y)
-                            box.PointC = Vector2.new(Left.X, Bottom.Y)
-                            box.PointD = Vector2.new(Right.X, Bottom.Y)
-    
-                            box.Visible = true
-                        else
-                            box.Visible = false
-                        end
+                        box.Size = boxsize
+                        box.Position = boxpos
+                        box.Visible = true
                     else
                         box.Visible = false
                     end
@@ -554,45 +592,21 @@ function AddToRenderList(plr)
 
             if esp_settings.Visuals.Healthbars then
                 if utility:IsAlive(plr) and utility:GetBodypart(plr, "torso") ~= nil then
+
+                    local Health, MaxHealth = utility:GetHealth(plr)
+                    local data = utility:GetBoundingBox(utility:GetCharacter(plr))
+                    local Width, Height = math.floor(data.pos.topLeft.X - data.pos.topRight.X), math.floor(data.pos.topLeft.Y - data.pos.bottomLeft.Y)
+                
+                    local BoxSize = Vector2.new(Width, Height)
+
+                    local healthsize = Vector2.new(2, math.floor(BoxSize.Y * (Health / MaxHealth)))
+                    local healthpos = Vector2.new(math.floor(data.pos.topLeft.X - ((4 + esp_settings.Other.HealthbarOffset))), math.floor(data.pos.bottomLeft.Y))
+                
                     local pos, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
                     if onscreen then
-                        local points = {}
-                        local c = 0
-                        for _,v in pairs(client.replication.bodyparts[plr]) do
-                            if v:IsA("BasePart") then
-                                c = c + 1
-                                local p = Camera:WorldToViewportPoint(v.Position)
-                                if v.Name == "torso" then
-                                    p = Camera:WorldToViewportPoint((v.CFrame * CFrame.new(0, 0, -v.Size.Z)).p)
-                                elseif v.Name == "Head" then
-                                    p = Camera:WorldToViewportPoint((v.CFrame * CFrame.new(0, v.Size.Y/2, v.Size.Z/1.25)).p)
-                                elseif string.match(v.Name, "Left") then
-                                    p = Camera:WorldToViewportPoint((v.CFrame * CFrame.new(-v.Size.X/2, 0, 0)).p)
-                                end
-                                points[c] = p
-                            end
-                        end
-                        local Left = GetClosest(points, Vector2.new(0, pos.Y))
-                        local Top = GetClosest(points, Vector2.new(pos.X, 0))
-                        local Bottom = GetClosest(points, Vector2.new(pos.X, Camera.ViewportSize.Y))
-                        if Left ~= nil and Top ~= nil and Bottom ~= nil then
-
-                            local max = Bottom.Y - Top.Y
-                            local percentage = utility:GetHealth(plr)/100
-
-                            local result = max * percentage
-
-                            healthbar.PointA = Vector2.new(Left.X - esp_settings.Other.HealthbarOffset, Top.Y + (max - result))
-                            healthbar.PointB = Vector2.new(Left.X - (10 + esp_settings.Other.HealthbarOffset), Top.Y + (max - result))
-                            healthbar.PointC = Vector2.new(Left.X - (10 + esp_settings.Other.HealthbarOffset), Bottom.Y)
-                            healthbar.PointD = Vector2.new(Left.X - esp_settings.Other.HealthbarOffset, Bottom.Y)
-
-                            healthbar.Color = esp_settings.Colors.HealthbarEmptyColor:lerp(esp_settings.Colors.HealthbarFullColor, percentage);
-
-                            healthbar.Visible = true
-                        else
-                            healthbar.Visible = false
-                        end
+                        healthbar.Size = healthsize
+                        healthbar.Position = healthpos
+                        healthbar.Visible = true
                     else
                         healthbar.Visible = false
                     end
@@ -650,6 +664,9 @@ function UpdateSettings()
     for i,v in pairs(weapontable) do
         if v then
             v.Size = esp_settings.Other.WeaponTextSize
+            v.Font = esp_settings.Other.WeaponFontFamily
+            v.Outline = esp_settings.Other.WeaponTextOutline
+            v.Color = esp_settings.Colors.WeaponColor
         end
     end
 end
@@ -662,7 +679,7 @@ function RemoveFromRenderList(plr)
                 removekey(drawingshit[plr.Name], find2d(drawingshit[plr.Name], v))
                 if typeof(v) == "Instance" and v.ClassName == "Highlight" then
                     v:Destroy()
-                elseif typeof(v) == "table" then
+                else
                     v:Remove()
                 end
             end
