@@ -271,6 +271,7 @@ function library:ToggleTeamcheck(option, value)
     assert(esp_settings.Teams[option] ~= nil, "This option doesn't exist!")
     assert(typeof(value) == "boolean", tostring(value) .. " is not a boolean!")
     esp_settings.Teams[option] = value
+    UpdateSettings()
 end
 
 function library:Toggle(option, value)
