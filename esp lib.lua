@@ -474,7 +474,7 @@ function AddToRenderList(plr)
                     local pos, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
                     if onscreen then
                         if plr.TeamColor == LocalPlayer.TeamColor then
-                            if esp_settings.Teams.Healthbars then
+                            if esp_settings.Teams.Boxes then
                                 box.Size = boxsize
                                 box.Position = boxpos
                                 box.Color = esp_settings.Colors.BoxTeamColor
