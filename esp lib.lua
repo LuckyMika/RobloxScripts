@@ -149,15 +149,25 @@ esp_settings = {}
 initialized = false
 defaultsettings = {
     Visuals = {
-        Boxes = false, -- Done
-        Tracers = false,-- Done
+        Boxes = false,
+        Tracers = false,
         Skeletons = false,
         Healthbars = false,
-        Outlines = false,-- Done
-        Chams = false,-- Done
-        Names = false,-- Done
+        Outlines = false,
+        Chams = false,
+        Names = false,
         Distances = false,
         Weapons = false
+    },
+    Teams = {
+        Boxes = true,
+        Tracers = true,
+        Skeletons = true,
+        Healthbars = true,
+        Outlines = true,
+        Chams = true,
+        Names = true,
+        Distances = true
     },
     Colors = {
         BoxEnemyColor = Color3.fromRGB(255,0,0),
@@ -221,24 +231,6 @@ defaultsettings = {
 function round(x)
     return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
 end
-
-local function Dist(pointA, pointB)
-    return math.sqrt(math.pow(pointA.X - pointB.X, 2) + math.pow(pointA.Y - pointB.Y, 2))
-end
-
-local function GetClosest(points, dest)
-    local min  = math.huge
-    local closest = nil
-    for _,v in pairs(points) do
-        local dist = Dist(v, dest)
-        if dist < min then
-            min = dist
-            closest = v
-        end
-    end
-    return closest
-end
-
 function find2d(table, result)
     for i,v in pairs(table) do
         if v == result then
@@ -446,8 +438,17 @@ function AddToRenderList(plr)
                     assert(utility:GetBodypart(plr, esp_settings.Other.TracerPart) ~= nil, "`" .. esp_settings.Other.TracerPart .. "` Doesn't exist in `" .. plr.Name .. ".Character`!")
                     local vec, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, esp_settings.Other.TracerPart).Position)
                     if onscreen then
-                        tracer.To = Vector2.new(vec.X, vec.Y)
-                        tracer.Visible = true
+                        if plr.TeamColor == LocalPlayer.TeamColor then
+                            if esp_settings.Teams.Tracers then
+                                tracer.To = Vector2.new(vec.X, vec.Y)
+                                tracer.Color = esp_settings.Colors.TracersTeamColor
+                                tracer.Visible = true
+                            end
+                        else
+                            tracer.To = Vector2.new(vec.X, vec.Y)
+                            tracer.Color = esp_settings.Colors.TracersEnemyColor
+                            tracer.Visible = true
+                        end
                     else
                         tracer.Visible = false
                     end
@@ -464,9 +465,19 @@ function AddToRenderList(plr)
                     local boxsize = Vector2.new(Width, Height)
                     local pos, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
                     if onscreen then
-                        box.Size = boxsize
-                        box.Position = boxpos
-                        box.Visible = true
+                        if plr.TeamColor == LocalPlayer.TeamColor then
+                            if esp_settings.Teams.Healthbars then
+                                box.Size = boxsize
+                                box.Position = boxpos
+                                box.Color = esp_settings.Colors.BoxTeamColor
+                                box.Visible = true
+                            end
+                        else
+                            box.Size = boxsize
+                            box.Position = boxpos
+                            box.Color = esp_settings.Colors.BoxEnemyColor
+                            box.Visible = true
+                        end
                     else
                         box.Visible = false
                     end
@@ -506,17 +517,70 @@ function AddToRenderList(plr)
                     drawtable.rightlowerconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0))) -- LowerTorso
 
                     if onScreen then
-                        drawtable.headline.Visible = true
-                        drawtable.torsoline.Visible = true
-                        drawtable.leftarmline.Visible = true
-                        drawtable.rightarmline.Visible = true
-                        drawtable.leftlegline.Visible = true
-                        drawtable.rightlegline.Visible = true
+                        if plr.TeamColor == LocalPlayer.TeamColor then
+                            if esp_settings.Teams.Skeletons then
+                                drawtable.headline.Color = esp_settings.Colors.SkeletonTeamColor
+                                drawtable.headline.Visible = true
 
-                        drawtable.leftupperconnector.Visible = true
-                        drawtable.rightupperconnector.Visible = true
-                        drawtable.leftlowerconnector.Visible = true
-                        drawtable.rightlowerconnector.Visible = true
+                                drawtable.torsoline.Color = esp_settings.Colors.SkeletonTeamColor
+                                drawtable.torsoline.Visible = true
+
+                                drawtable.leftarmline.Color = esp_settings.Colors.SkeletonTeamColor
+                                drawtable.leftarmline.Visible = true
+
+                                drawtable.rightarmline.Color = esp_settings.Colors.SkeletonTeamColor
+                                drawtable.rightarmline.Visible = true
+
+                                drawtable.leftlegline.Color = esp_settings.Colors.SkeletonTeamColor
+                                drawtable.leftlegline.Visible = true
+
+                                drawtable.rightlegline.Color = esp_settings.Colors.SkeletonTeamColor
+                                drawtable.rightlegline.Visible = true
+
+                                drawtable.leftupperconnector.Color = esp_settings.Colors.SkeletonTeamColor
+                                drawtable.leftupperconnector.Visible = true
+
+                                drawtable.rightupperconnector.Color = esp_settings.Colors.SkeletonTeamColor
+                                drawtable.rightupperconnector.Visible = true
+
+                                drawtable.leftlowerconnector.Color = esp_settings.Colors.SkeletonTeamColor
+                                drawtable.leftlowerconnector.Visible = true
+
+                                drawtable.rightlowerconnector.Color = esp_settings.Colors.SkeletonTeamColor
+                                drawtable.rightlowerconnector.Visible = true
+                            end
+                        else
+                            drawtable.headline.Color = esp_settings.Colors.SkeletonEnemyColor
+                                drawtable.headline.Visible = true
+
+                                drawtable.torsoline.Color = esp_settings.Colors.SkeletonEnemyColor
+                                drawtable.torsoline.Visible = true
+
+                                drawtable.leftarmline.Color = esp_settings.Colors.SkeletonEnemyColor
+                                drawtable.leftarmline.Visible = true
+
+                                drawtable.rightarmline.Color = esp_settings.Colors.SkeletonEnemyColor
+                                drawtable.rightarmline.Visible = true
+
+                                drawtable.leftlegline.Color = esp_settings.Colors.SkeletonEnemyColor
+                                drawtable.leftlegline.Visible = true
+
+                                drawtable.rightlegline.Color = esp_settings.Colors.SkeletonEnemyColor
+                                drawtable.rightlegline.Visible = true
+
+                                drawtable.leftupperconnector.Color = esp_settings.Colors.SkeletonEnemyColor
+                                drawtable.leftupperconnector.Visible = true
+
+                                drawtable.rightupperconnector.Color = esp_settings.Colors.SkeletonEnemyColor
+                                drawtable.rightupperconnector.Visible = true
+
+                                drawtable.leftlowerconnector.Color = esp_settings.Colors.SkeletonEnemyColor
+                                drawtable.leftlowerconnector.Visible = true
+
+                                drawtable.rightlowerconnector.Color = esp_settings.Colors.SkeletonEnemyColor
+                                drawtable.rightlowerconnector.Visible = true
+                        end
+
                     else
                         drawtable.headline.Visible = false
                         drawtable.torsoline.Visible = false
@@ -562,8 +626,18 @@ function AddToRenderList(plr)
                 if utility:IsAlive(plr) then
                     local vec, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "head").Position)
                     if onscreen then
-                        name.Position = Vector2.new(vec.X, vec.Y)
-                        name.Visible = true
+                        if plr.TeamColor == LocalPlayer.TeamColor then
+                            if esp_settings.Teams.Names then
+                                name.Position = Vector2.new(vec.X, vec.Y)
+                                name.Color = esp_settings.Colors.NameTeamColor
+                                name.Visible = true
+                            end
+                        else
+                            name.Position = Vector2.new(vec.X, vec.Y)
+                            name.Color = esp_settings.Colors.NameEnemyColor
+                            name.Visible = true
+                        end
+                        
                     else
                         name.Visible = false
                     end
@@ -580,8 +654,18 @@ function AddToRenderList(plr)
                         while LocalPlayer.Character == nil do
                             task.wait(0.5)
                         end
-                        distance.Text = tostring(round((LocalPlayer.Character.Head.Position - utility:GetBodypart(plr, "head").Position).magnitude)) .. "Studs"
-                        distance.Visible = true
+
+                        if plr.TeamColor == LocalPlayer.TeamColor then
+                            if esp_settings.Teams.Distances then
+                                distance.Text = tostring(round((LocalPlayer.Character.Head.Position - utility:GetBodypart(plr, "head").Position).magnitude)) .. "Studs"
+                                distance.Color = esp_settings.Colors.DistanceTeamColor
+                                distance.Visible = true
+                            end
+                        else
+                            distance.Text = tostring(round((LocalPlayer.Character.Head.Position - utility:GetBodypart(plr, "head").Position).magnitude)) .. "Studs"
+                            distance.Color = esp_settings.Colors.DistanceEnemyColor
+                            distance.Visible = true
+                        end
                     else
                         distance.Visible = false
                     end
@@ -604,9 +688,18 @@ function AddToRenderList(plr)
                 
                     local pos, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
                     if onscreen then
-                        healthbar.Size = healthsize
-                        healthbar.Position = healthpos
-                        healthbar.Visible = true
+
+                        if plr.TeamColor == LocalPlayer.TeamColor then
+                            if esp_settings.Teams.Healthbars then
+                                healthbar.Size = healthsize
+                                healthbar.Position = healthpos
+                                healthbar.Visible = true
+                            end
+                        else
+                            healthbar.Size = healthsize
+                            healthbar.Position = healthpos
+                            healthbar.Visible = true
+                        end
                     else
                         healthbar.Visible = false
                     end
@@ -627,7 +720,14 @@ function AddToRenderList(plr)
                         if character:FindFirstChild("outline") then
                             character:FindFirstChild("outline"):Destroy()
                         end
-                        chams(plr, plr.TeamColor == LocalPlayer.TeamColor)
+
+                        if plr.TeamColor == LocalPlayer.TeamColor then
+                            if esp_settings.Teams.Chams then
+                                chams(plr, plr.TeamColor == LocalPlayer.TeamColor)
+                            end
+                        else
+                            chams(plr, false)
+                        end
                     end
                 end
             end
@@ -644,7 +744,13 @@ function AddToRenderList(plr)
                         if character:FindFirstChild("cham") then
                             character:FindFirstChild("cham"):Destroy()
                         end
-                        outlines(plr, plr.TeamColor == LocalPlayer.TeamColor)
+                        if plr.TeamColor == LocalPlayer.TeamColor then
+                            if esp_settings.Teams.Outlines then
+                                outlines(plr, plr.TeamColor == LocalPlayer.TeamColor)
+                            end
+                        else
+                            outlines(plr, false)
+                        end
                     end
                 end
             end
