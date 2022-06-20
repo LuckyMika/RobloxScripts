@@ -276,7 +276,7 @@ end
 function library:Toggle(option, value)
     assert(esp_settings.Visuals[option] ~= nil, "This option doesn't exist!")
     assert(typeof(value) == "boolean", tostring(value) .. " is not a boolean!")
-    esp_settings.Visuals[option] = state
+    esp_settings.Visuals[option] = value
     UpdateSettings()
 end
 
@@ -700,11 +700,13 @@ function AddToRenderList(plr)
                             if esp_settings.Teams.Healthbars then
                                 healthbar.Size = healthsize
                                 healthbar.Position = healthpos
+                                healthbar.Color = esp_settings.Colors.HealthbarEmptyColor:lerp(esp_settings.Colors.HealthbarFullColor, utility:GetHealth(plr)/100);
                                 healthbar.Visible = true
                             end
                         else
                             healthbar.Size = healthsize
                             healthbar.Position = healthpos
+                            healthbar.Color = esp_settings.Colors.HealthbarEmptyColor:lerp(esp_settings.Colors.HealthbarFullColor, utility:GetHealth(plr)/100);
                             healthbar.Visible = true
                         end
                     else
