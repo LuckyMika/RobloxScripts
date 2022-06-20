@@ -268,9 +268,9 @@ function library:UpdateColor(option, value)
 end
 
 function library:ToggleTeamcheck(option, value)
-    assert(esp_settings.Team[option] ~= nil, "This option doesn't exist!")
+    assert(esp_settings.Teams[option] ~= nil, "This option doesn't exist!")
     assert(typeof(value) == "boolean", tostring(value) .. " is not a boolean!")
-    esp_settings.Team[option] = value
+    esp_settings.Teams[option] = value
 end
 
 function library:Toggle(option, value)
