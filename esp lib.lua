@@ -256,19 +256,26 @@ function library:Init(options)
 end
 
 function library:UpdateSetting(option, value)
+    assert(esp_settings.Other[option] ~= nil, "This option doesn't exist!")
     esp_settings.Other[option] = value
     UpdateSettings()
 end
 
 function library:UpdateColor(option, value)
+    assert(esp_settings.Colors[option] ~= nil, "This option doesn't exist!")
     esp_settings.Colors[option] = value
     UpdateSettings()
 end
 
+function library:ToggleTeamcheck(option, value)
+    assert(esp_settings.Team[option] ~= nil, "This option doesn't exist!")
+    assert(typeof(value) == "boolean", tostring(value) .. " is not a boolean!")
+    esp_settings.Team[option] = value
+end
 
-function library:Toggle(option, state)
+function library:Toggle(option, value)
     assert(esp_settings.Visuals[option] ~= nil, "This option doesn't exist!")
-    assert(typeof(state) == "boolean", "This option doesn't exist!")
+    assert(typeof(value) == "boolean", tostring(value) .. " is not a boolean!")
     esp_settings.Visuals[option] = state
     UpdateSettings()
 end
