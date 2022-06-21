@@ -1,3 +1,9 @@
+--[[
+    Fly script that acts like minecrafts fly
+    Author: <@387344884559773699>
+]]--
+
+
 local char = game.Players.LocalPlayer.Character
 local uis = game:GetService("UserInputService")
 local flying = false
