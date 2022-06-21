@@ -154,7 +154,9 @@ defaultsettings = {
         Skeletons = false,
         Healthbars = false,
         Outlines = false,
+        VisibleOutlines = false,
         Chams = false,
+        VisibleChams = false,
         Names = false,
         Distances = false,
         Weapons = false
@@ -165,7 +167,9 @@ defaultsettings = {
         Skeletons = true,
         Healthbars = true,
         Outlines = true,
+        VisibleOutlines = true,
         Chams = true,
+        VisibleChams = true,
         Names = true,
         Distances = true
     },
@@ -181,10 +185,16 @@ defaultsettings = {
         
         OutlinesEnemyColor = Color3.fromRGB(255,0,0),
         OutlinesTeamColor = Color3.fromRGB(0,0,255),
+
+        VisibleOutlinesEnemyColor = Color3.fromRGB(255,0,0),
+        VisibleOutlinesTeamColor = Color3.fromRGB(0,0,255),
         
         ChamsEnemyColor = Color3.fromRGB(255,0,0),
         ChamsTeamColor = Color3.fromRGB(0,0,255),
         
+        VisibleChamsEnemyColor = Color3.fromRGB(255,0,0),
+        VisibleChamsTeamColor = Color3.fromRGB(0,0,255),
+
         NameEnemyColor = Color3.fromRGB(255,0,0),
         NameTeamColor = Color3.fromRGB(0,0,255),
         
@@ -221,8 +231,12 @@ defaultsettings = {
         DistanceFontFamily = Drawing.Fonts["UI"],
         
         ChamsTransparency = 0,
-        
+
+        VisibleChamsTransparency = 0,
+
         OutlinesTransparency = 0,
+
+        VisibleOutlinesTransparency = 0,
 
         HealthbarOffset = 10
     }
@@ -287,14 +301,14 @@ function chams(plr, friendly)
     local character = utility:GetCharacter(plr)
     local cham = Instance.new("Highlight",character)
     cham.Enabled = false
-    cham.Name = "cham"
+    cham.Name = "highlight"
     cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
     cham.OutlineColor = Color3.fromRGB(0,0,0)
     cham.FillColor = friendly and esp_settings.Colors.ChamsTeamColor or esp_settings.Colors.ChamsEnemyColor
     cham.FillTransparency = esp_settings.Other.ChamsTransparency
     cham.OutlineTransparency = 1
 
-    table.insert(drawingshit[plr.Name], cham)
+    drawingshit[plr.Name].highlight =  cham
 
 end
 
@@ -302,15 +316,46 @@ function outlines(plr, friendly)
     local character = utility:GetCharacter(plr)
     local outline = Instance.new("Highlight",character)
     outline.Enabled = false
-    outline.Name = "outline"
+    outline.Name = "highlight"
     outline.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
     outline.FillColor = Color3.fromRGB(0,0,0)
     outline.OutlineColor = friendly and esp_settings.Colors.OutlinesTeamColor or esp_settings.Colors.OutlinesEnemyColor
     outline.OutlineTransparency = esp_settings.Other.OutlinesTransparency
     outline.FillTransparency = 1
     
-    table.insert(drawingshit[plr.Name], outline)
+    drawingshit[plr.Name].highlight = outline
 end
+
+function vischams(plr, friendly)
+    local character = utility:GetCharacter(plr)
+    local vischam = Instance.new("Highlight",character)
+    vischam.Enabled = false
+    vischam.Name = "highlight"
+    vischam.DepthMode = Enum.HighlightDepthMode.Occluded
+    vischam.OutlineColor = Color3.fromRGB(0,0,0)
+    vischam.FillColor = friendly and esp_settings.Colors.ChamsTeamColor or esp_settings.Colors.ChamsEnemyColor
+    vischam.FillTransparency = esp_settings.Other.ChamsTransparency
+    vischam.OutlineTransparency = 1
+
+    drawingshit[plr.Name].highlight =  vischam
+
+end
+
+function visoutlines(plr, friendly)
+    local character = utility:GetCharacter(plr)
+    local visoutline = Instance.new("Highlight",character)
+    visoutline.Enabled = false
+    visoutline.Name = "highlight"
+    visoutline.DepthMode = Enum.HighlightDepthMode.Occluded
+    visoutline.FillColor = Color3.fromRGB(0,0,0)
+    visoutline.OutlineColor = friendly and esp_settings.Colors.VisibleOutlinesTeamColor or esp_settings.Colors.VisibleOutlinesEnemyColor
+    visoutline.OutlineTransparency = esp_settings.Other.VisibleOutlinesTransparency
+    visoutline.FillTransparency = 1
+    
+    drawingshit[plr.Name].highlight = visoutline
+end
+
+
 
 function AddToRenderList(plr)
 
@@ -421,23 +466,23 @@ function AddToRenderList(plr)
             drawtable.rightlowerconnector.Thickness = 1.5
             drawtable.rightlowerconnector.Transparency = 1
 
-            table.insert(drawingshit[plr.Name], drawtable.headline)
-            table.insert(drawingshit[plr.Name], drawtable.torsoline)
-            table.insert(drawingshit[plr.Name], drawtable.leftarmline)
-            table.insert(drawingshit[plr.Name], drawtable.rightarmline)
-            table.insert(drawingshit[plr.Name], drawtable.leftlegline)
-            table.insert(drawingshit[plr.Name], drawtable.rightlegline)
-            table.insert(drawingshit[plr.Name], drawtable.leftupperconnector)
-            table.insert(drawingshit[plr.Name], drawtable.rightupperconnector)
-            table.insert(drawingshit[plr.Name], drawtable.leftlowerconnector)
-            table.insert(drawingshit[plr.Name], drawtable.rightlowerconnector)
+            drawingshit[plr.Name].headline = drawtable.headline
+            drawingshit[plr.Name].torsoline = drawtable.torsoline
+            drawingshit[plr.Name].leftarmline = drawtable.leftarmline
+            drawingshit[plr.Name].rightarmline = drawtable.rightarmline
+            drawingshit[plr.Name].leftlegline = drawtable.leftlegline
+            drawingshit[plr.Name].rightlegline = drawtable.rightlegline
+            drawingshit[plr.Name].leftupperconnector = drawtable.leftupperconnector
+            drawingshit[plr.Name].rightupperconnector = drawtable.rightupperconnector
+            drawingshit[plr.Name].leftlowerconnector = drawtable.leftlowerconnector
+            drawingshit[plr.Name].rightlowerconnector = drawtable.rightlowerconnector
         --end
 
-        table.insert(drawingshit[plr.Name], name)
-        table.insert(drawingshit[plr.Name], box)
-        table.insert(drawingshit[plr.Name], tracer)
-        table.insert(drawingshit[plr.Name], distance)
-        table.insert(drawingshit[plr.Name], healthbar)
+        drawingshit[plr.Name].name = name
+        drawingshit[plr.Name].box = box
+        drawingshit[plr.Name].tracer = tracer
+        drawingshit[plr.Name].distance = distance
+        drawingshit[plr.Name].healthbar = healthbar
 
         rs:BindToRenderStep(plr.Name .. "Mika Esp", Enum.RenderPriority.Last.Value, function()
 
@@ -701,14 +746,14 @@ function AddToRenderList(plr)
                             if esp_settings.Teams.Healthbars then
                                 healthbar.Size = healthsize
                                 healthbar.Position = healthpos
-                                healthbar.Color = esp_settings.Colors.HealthbarEmptyColor:lerp(esp_settings.Colors.HealthbarFullColor, utility:GetHealth(plr)/100);
                                 healthbar.Visible = true
+                                healthbar.Color = esp_settings.Colors.HealthbarEmptyColor:lerp(esp_settings.Colors.HealthbarFullColor, utility:GetHealth(plr)/100);
                             end
                         else
                             healthbar.Size = healthsize
                             healthbar.Position = healthpos
-                            healthbar.Color = esp_settings.Colors.HealthbarEmptyColor:lerp(esp_settings.Colors.HealthbarFullColor, utility:GetHealth(plr)/100);
                             healthbar.Visible = true
+                            healthbar.Color = esp_settings.Colors.HealthbarEmptyColor:lerp(esp_settings.Colors.HealthbarFullColor, utility:GetHealth(plr)/100);
                         end
                     else
                         healthbar.Visible = false
@@ -721,23 +766,49 @@ function AddToRenderList(plr)
             if esp_settings.Visuals.Chams then
                 if utility:IsAlive(plr) then
                     local character = utility:GetCharacter(plr)
-                    if character:FindFirstChild("cham") then
-                        if character:FindFirstChild("outline") then
-                            character:FindFirstChild("outline"):Destroy()
-                        end
-                        character:FindFirstChild("cham").Enabled = true
-                    else
-                        if character:FindFirstChild("outline") then
-                            character:FindFirstChild("outline"):Destroy()
-                        end
 
-                        if plr.TeamColor == LocalPlayer.TeamColor then
-                            if esp_settings.Teams.Chams then
-                                chams(plr, plr.TeamColor == LocalPlayer.TeamColor)
-                            end
-                        else
-                            chams(plr, false)
+                    if character:FindFirstChild("highlight") then
+                        character:FindFirstChild("highlight"):Destroy()
+                    end
+
+                    if plr.TeamColor == LocalPlayer.TeamColor then
+                        if esp_settings.Teams.Chams then
+                            chams(plr, plr.TeamColor == LocalPlayer.TeamColor)
+                            character:FindFirstChild("highlight").Enabled = true
                         end
+                    else
+                        chams(plr, false)
+                        character:FindFirstChild("highlight").Enabled = true
+                    end
+                    character:FindFirstChild("highlight").Enabled = true
+                else
+                    if drawingshit[plr.Name].highlight ~= nil then
+                        drawingshit[plr.Name].highlight.Enabled = false
+                    end
+                end
+            end
+
+            if esp_settings.Visuals.VisibleChams then
+                if utility:IsAlive(plr) then
+                    local character = utility:GetCharacter(plr)
+
+                    if character:FindFirstChild("highlight") then
+                        character:FindFirstChild("highlight"):Destroy()
+                    end
+
+                    if plr.TeamColor == LocalPlayer.TeamColor then
+                        if esp_settings.Teams.VisibleChams then
+                            vischams(plr, plr.TeamColor == LocalPlayer.TeamColor)
+                            character:FindFirstChild("highlight").Enabled = true
+                        end
+                    else
+                        vischams(plr, false)
+                        character:FindFirstChild("highlight").Enabled = true
+                    end
+                    character:FindFirstChild("highlight").Enabled = true
+                else
+                    if drawingshit[plr.Name].highlight ~= nil then
+                        drawingshit[plr.Name].highlight.Enabled = false
                     end
                 end
             end
@@ -745,26 +816,46 @@ function AddToRenderList(plr)
             if esp_settings.Visuals.Outlines then
                 if utility:IsAlive(plr) then
                     local character = utility:GetCharacter(plr)
-                    if character:FindFirstChild("outline") then
-                        if character:FindFirstChild("cham") then
-                            character:FindFirstChild("cham"):Destroy()
+                    if character:FindFirstChild("highlight") then
+                        character:FindFirstChild("highlight"):Destroy()
+                    end
+                    if plr.TeamColor == LocalPlayer.TeamColor then
+                        if esp_settings.Teams.Outlines then
+                            outlines(plr, plr.TeamColor == LocalPlayer.TeamColor)
+                            character:FindFirstChild("highlight").Enabled = true
                         end
-                        character:FindFirstChild("outline").Enabled = true
                     else
-                        if character:FindFirstChild("cham") then
-                            character:FindFirstChild("cham"):Destroy()
-                        end
-                        if plr.TeamColor == LocalPlayer.TeamColor then
-                            if esp_settings.Teams.Outlines then
-                                outlines(plr, plr.TeamColor == LocalPlayer.TeamColor)
-                            end
-                        else
-                            outlines(plr, false)
-                        end
+                        outlines(plr, false)
+                        character:FindFirstChild("highlight").Enabled = true
+                    end
+                else
+                    if drawingshit[plr.Name].highlight ~= nil then
+                        drawingshit[plr.Name].highlight.Enabled = false
                     end
                 end
             end
 
+            if esp_settings.Visuals.VisibleOutlines then
+                if utility:IsAlive(plr) then
+                    local character = utility:GetCharacter(plr)
+                    if character:FindFirstChild("highlight") then
+                        character:FindFirstChild("highlight"):Destroy()
+                    end
+                    if plr.TeamColor == LocalPlayer.TeamColor then
+                        if esp_settings.Teams.VisibleOutlines then
+                            visoutlines(plr, plr.TeamColor == LocalPlayer.TeamColor)
+                            character:FindFirstChild("highlight").Enabled = true
+                        end
+                    else
+                        visoutlines(plr, false)
+                        character:FindFirstChild("highlight").Enabled = true
+                    end
+                else
+                    if drawingshit[plr.Name].highlight ~= nil then
+                        drawingshit[plr.Name].highlight.Enabled = false
+                    end
+                end
+            end
         end)
     end
 end
