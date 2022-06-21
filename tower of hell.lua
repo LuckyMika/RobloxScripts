@@ -1,6 +1,7 @@
--- Author: LuckyMika#6727
--- New UI library 
--- Have fun!
+--[[
+    Simple Tower of Hell script
+    Author: <@387344884559773699>
+]]--
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("TITLE", "Synapse")
