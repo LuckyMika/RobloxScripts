@@ -245,7 +245,8 @@ defaultsettings = {
 
         CrosshairSize = 10,
         CrosshairThickness = 1,
-        CrosshairTransparency = 1
+        CrosshairTransparency = 1,
+        CrosshairOutline = false
     }
 }
 
@@ -411,12 +412,14 @@ function AddToRenderList(plr)
         crosshairvertical.Thickness = esp_settings.Other.CrosshairThickness
         crosshairvertical.Transparency = esp_settings.Other.CrosshairTransparency
         crosshairvertical.Color = esp_settings.Colors.CrosshairColor
+        crosshairvertical.Outline = esp_settings.Other.CrosshairOutline
 
         local crosshairhorizontal = Drawing.new("Line")
         crosshairhorizontal.Visible = false
         crosshairhorizontal.Thickness = esp_settings.Other.CrosshairThickness
         crosshairhorizontal.Transparency = esp_settings.Other.CrosshairTransparency
         crosshairhorizontal.Color = esp_settings.Colors.CrosshairColor
+        crosshairhorizontal.Outline = esp_settings.Other.CrosshairOutline
 
         local drawtable = {}
 
@@ -502,6 +505,8 @@ function AddToRenderList(plr)
         drawingshit[plr.Name].tracer = tracer
         drawingshit[plr.Name].distance = distance
         drawingshit[plr.Name].healthbar = healthbar
+        drawingshit[plr.Name].crosshairvertical = crosshairvertical
+        drawingshit[plr.Name].crosshairhorizontal = crosshairhorizontal
 
         rs:BindToRenderStep(plr.Name .. "Mika Esp", Enum.RenderPriority.Last.Value, function()
 
@@ -906,15 +911,18 @@ function AddToRenderList(plr)
                 end
             end
 
-            -- if esp_settings.Visuals.Crosshair then
-            --     local center = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+            if esp_settings.Visuals.Crosshair then
+                local center = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
 
-            --     local vertical_from = center.X - esp_settings.Other.CrosshairSize
-            --     local vertical_to = center.X + esp_settings.Other.CrosshairSize
+                crosshairvertical.From = Vector2.new(center.X - esp_settings.Other.CrosshairSize, center.Y)
+                crosshairvertical.To = Vector2.new(center.X + esp_settings.Other.CrosshairSize, center.Y)
 
-            --     local horizontal_from = center.Y - esp_settings.Other.CrosshairSize
-            --     local horizontal_to = center.Y + esp_settings.Other.CrosshairSize
-            -- end
+                crosshairhorizontal.From = Vector2.new(center.X, center.Y - esp_settings.Other.CrosshairSize)
+                crosshairhorizontal.To = Vector2.new(center.X, center.Y + esp_settings.Other.CrosshairSize)
+
+                crosshairvertical.Visible = true
+                crosshairhorizontal.Visible = true
+            end
         end)
     end
 end
@@ -993,10 +1001,6 @@ function RemoveWeaponFromRenderList(gun)
         weapontable[gun] = nil
     end
 end
-
-
-
-
 
 task.spawn(function()
     while not initialized do
