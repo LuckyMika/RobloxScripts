@@ -159,7 +159,8 @@ defaultsettings = {
         VisibleChams = false,
         Names = false,
         Distances = false,
-        Weapons = false
+        Weapons = false,
+        Crosshair = false
     },
     Teams = {
         Boxes = true,
@@ -201,9 +202,11 @@ defaultsettings = {
         DistanceEnemyColor = Color3.fromRGB(255,0,0),
         DistanceTeamColor = Color3.fromRGB(0,0,255),
         
-        WeaponColor = Color3.fromRGB(0,255,0),
         HealthbarFullColor = Color3.fromRGB(0,255,0),
-        HealthbarEmptyColor = Color3.fromRGB(255,0,0)
+        HealthbarEmptyColor = Color3.fromRGB(255,0,0),
+        WeaponColor = Color3.fromRGB(0,255,0),
+
+        CrosshairColor = Color3.fromRGB(255,255,255)
     },
     Other = {
         BoxesOutline = false,
@@ -238,7 +241,11 @@ defaultsettings = {
 
         VisibleOutlinesTransparency = 0,
 
-        HealthbarOffset = 10
+        HealthbarOffset = 10,
+
+        CrosshairSize = 10,
+        CrosshairThickness = 1,
+        CrosshairTransparency = 1
     }
 }
 
@@ -308,7 +315,7 @@ function chams(plr, friendly)
     cham.FillTransparency = esp_settings.Other.ChamsTransparency
     cham.OutlineTransparency = 1
 
-    drawingshit[plr.Name].highlight =  cham
+    drawingshit[plr.Name].highlight = cham
 
 end
 
@@ -337,7 +344,7 @@ function vischams(plr, friendly)
     vischam.FillTransparency = esp_settings.Other.ChamsTransparency
     vischam.OutlineTransparency = 1
 
-    drawingshit[plr.Name].highlight =  vischam
+    drawingshit[plr.Name].highlight = vischam
 
 end
 
@@ -398,6 +405,18 @@ function AddToRenderList(plr)
         healthbar.Visible = false
         healthbar.Filled = true
         healthbar.Color = esp_settings.Colors.HealthbarEmptyColor:lerp(esp_settings.Colors.HealthbarFullColor, utility:GetHealth(plr)/100);
+
+        local crosshairvertical = Drawing.new("Line")
+        crosshairvertical.Visible = false
+        crosshairvertical.Thickness = esp_settings.Other.CrosshairThickness
+        crosshairvertical.Transparency = esp_settings.Other.CrosshairTransparency
+        crosshairvertical.Color = esp_settings.Colors.CrosshairColor
+
+        local crosshairhorizontal = Drawing.new("Line")
+        crosshairhorizontal.Visible = false
+        crosshairhorizontal.Thickness = esp_settings.Other.CrosshairThickness
+        crosshairhorizontal.Transparency = esp_settings.Other.CrosshairTransparency
+        crosshairhorizontal.Color = esp_settings.Colors.CrosshairColor
 
         local drawtable = {}
 
@@ -703,11 +722,7 @@ function AddToRenderList(plr)
                 if utility:IsAlive(plr) then
                     local vec, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "head").Position)
                     if onscreen then
-                        distance.Position = Vector2.new(vec.X, vec.Y)
-                        while LocalPlayer.Character == nil do
-                            task.wait(0.5)
-                        end
-
+                        distance.Position = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0)))
                         if plr.TeamColor == LocalPlayer.TeamColor then
                             if esp_settings.Teams.Distances then
                                 distance.Text = tostring(round((LocalPlayer.Character.Head.Position - utility:GetBodypart(plr, "head").Position).magnitude)) .. "Studs"
@@ -783,7 +798,7 @@ function AddToRenderList(plr)
                     character:FindFirstChild("highlight").Enabled = true
                 else
                     if drawingshit[plr.Name].highlight ~= nil then
-                        drawingshit[plr.Name].highlight.Enabled = false
+                        drawingshit[plr.Name].highlight:Destroy()
                     end
                 end
             end
@@ -808,7 +823,7 @@ function AddToRenderList(plr)
                     character:FindFirstChild("highlight").Enabled = true
                 else
                     if drawingshit[plr.Name].highlight ~= nil then
-                        drawingshit[plr.Name].highlight.Enabled = false
+                        drawingshit[plr.Name].highlight:Destroy()
                     end
                 end
             end
@@ -830,7 +845,7 @@ function AddToRenderList(plr)
                     end
                 else
                     if drawingshit[plr.Name].highlight ~= nil then
-                        drawingshit[plr.Name].highlight.Enabled = false
+                        drawingshit[plr.Name].highlight:Destroy()
                     end
                 end
             end
@@ -852,10 +867,20 @@ function AddToRenderList(plr)
                     end
                 else
                     if drawingshit[plr.Name].highlight ~= nil then
-                        drawingshit[plr.Name].highlight.Enabled = false
+                        drawingshit[plr.Name].highlight:Destroy()
                     end
                 end
             end
+
+            -- if esp_settings.Visuals.Crosshair then
+            --     local center = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+
+            --     local vertical_from = center.X - esp_settings.Other.CrosshairSize
+            --     local vertical_to = center.X + esp_settings.Other.CrosshairSize
+
+            --     local horizontal_from = center.Y - esp_settings.Other.CrosshairSize
+            --     local horizontal_to = center.Y + esp_settings.Other.CrosshairSize
+            -- end
         end)
     end
 end
@@ -934,10 +959,6 @@ function RemoveWeaponFromRenderList(gun)
         weapontable[gun] = nil
     end
 end
-
-
-
-
 
 task.spawn(function()
     while not initialized do
