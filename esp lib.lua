@@ -782,23 +782,31 @@ function AddToRenderList(plr)
                 if utility:IsAlive(plr) then
                     local character = utility:GetCharacter(plr)
 
-                    if character:FindFirstChild("highlight") then
-                        character:FindFirstChild("highlight"):Destroy()
+                    if drawingshit[plr.Name].highlight then
+                        drawingshit[plr.Name].highlight:Destroy()
                     end
 
                     if plr.TeamColor == LocalPlayer.TeamColor then
                         if esp_settings.Teams.Chams then
-                            chams(plr, plr.TeamColor == LocalPlayer.TeamColor)
-                            character:FindFirstChild("highlight").Enabled = true
+                            chams(plr, true)
                         end
                     else
                         chams(plr, false)
-                        character:FindFirstChild("highlight").Enabled = true
                     end
-                    character:FindFirstChild("highlight").Enabled = true
+                    if drawingshit[plr.Name].highlight then
+                        if drawingshit[plr.Name].highlight.Parent then
+                            drawingshit[plr.Name].highlight.Enabled = true
+                        else
+                            drawingshit[plr.Name].highlight:Destroy()
+                        end
+                    end
                 else
-                    if drawingshit[plr.Name].highlight ~= nil then
-                        drawingshit[plr.Name].highlight:Destroy()
+                    if drawingshit[plr.Name].highlight then
+                        if drawingshit[plr.Name].highlight.Parent then
+                            drawingshit[plr.Name].highlight.Enabled = false
+                        else
+                            drawingshit[plr.Name].highlight:Destroy()
+                        end
                     end
                 end
             end
@@ -807,23 +815,31 @@ function AddToRenderList(plr)
                 if utility:IsAlive(plr) then
                     local character = utility:GetCharacter(plr)
 
-                    if character:FindFirstChild("highlight") then
-                        character:FindFirstChild("highlight"):Destroy()
+                    if character:WaitForChild("highlight", 3) then
+                        character.highlight:Destroy()
                     end
 
                     if plr.TeamColor == LocalPlayer.TeamColor then
                         if esp_settings.Teams.VisibleChams then
-                            vischams(plr, plr.TeamColor == LocalPlayer.TeamColor)
-                            character:FindFirstChild("highlight").Enabled = true
+                            vischams(plr, true)
                         end
                     else
                         vischams(plr, false)
-                        character:FindFirstChild("highlight").Enabled = true
                     end
-                    -- character:FindFirstChild("highlight").Enabled = true
+                    if drawingshit[plr.Name].highlight then
+                        if drawingshit[plr.Name].highlight.Parent then
+                            drawingshit[plr.Name].highlight.Enabled = true
+                        else
+                            drawingshit[plr.Name].highlight:Destroy()
+                        end
+                    end
                 else
-                    if drawingshit[plr.Name].highlight ~= nil then
-                        drawingshit[plr.Name].highlight:Destroy()
+                    if drawingshit[plr.Name].highlight then
+                        if drawingshit[plr.Name].highlight.Parent then
+                            drawingshit[plr.Name].highlight.Enabled = false
+                        else
+                            drawingshit[plr.Name].highlight:Destroy()
+                        end
                     end
                 end
             end
@@ -831,21 +847,30 @@ function AddToRenderList(plr)
             if esp_settings.Visuals.Outlines then
                 if utility:IsAlive(plr) then
                     local character = utility:GetCharacter(plr)
-                    if character:FindFirstChild("highlight") then
-                        character:FindFirstChild("highlight"):Destroy()
+                    if character:WaitForChild("highlight", 3) then
+                        character.highlight:Destroy()
                     end
                     if plr.TeamColor == LocalPlayer.TeamColor then
                         if esp_settings.Teams.Outlines then
-                            outlines(plr, plr.TeamColor == LocalPlayer.TeamColor)
-                            character:FindFirstChild("highlight").Enabled = true
+                            outlines(plr, true)
                         end
                     else
                         outlines(plr, false)
-                        character:FindFirstChild("highlight").Enabled = true
+                    end
+                    if drawingshit[plr.Name].highlight then
+                        if drawingshit[plr.Name].highlight.Parent then
+                            drawingshit[plr.Name].highlight.Enabled = true
+                        else
+                            drawingshit[plr.Name].highlight:Destroy()
+                        end
                     end
                 else
-                    if drawingshit[plr.Name].highlight ~= nil then
-                        drawingshit[plr.Name].highlight:Destroy()
+                    if drawingshit[plr.Name].highlight then
+                        if drawingshit[plr.Name].highlight.Parent then
+                            drawingshit[plr.Name].highlight.Enabled = false
+                        else
+                            drawingshit[plr.Name].highlight:Destroy()
+                        end
                     end
                 end
             end
@@ -853,21 +878,30 @@ function AddToRenderList(plr)
             if esp_settings.Visuals.VisibleOutlines then
                 if utility:IsAlive(plr) then
                     local character = utility:GetCharacter(plr)
-                    if character:FindFirstChild("highlight") then
-                        character:FindFirstChild("highlight"):Destroy()
+                    if character:WaitForChild("highlight", 3) then
+                        character.highlight:Destroy()
                     end
                     if plr.TeamColor == LocalPlayer.TeamColor then
                         if esp_settings.Teams.VisibleOutlines then
-                            visoutlines(plr, plr.TeamColor == LocalPlayer.TeamColor)
-                            character:FindFirstChild("highlight").Enabled = true
+                            visoutlines(plr, true)
                         end
                     else
                         visoutlines(plr, false)
-                        character:FindFirstChild("highlight").Enabled = true
+                    end
+                    if drawingshit[plr.Name].highlight then
+                        if drawingshit[plr.Name].highlight.Parent then
+                            drawingshit[plr.Name].highlight.Enabled = true
+                        else
+                            drawingshit[plr.Name].highlight:Destroy()
+                        end
                     end
                 else
-                    if drawingshit[plr.Name].highlight ~= nil then
-                        drawingshit[plr.Name].highlight:Destroy()
+                    if drawingshit[plr.Name].highlight then
+                        if drawingshit[plr.Name].highlight.Parent then
+                            drawingshit[plr.Name].highlight.Enabled = false
+                        else
+                            drawingshit[plr.Name].highlight:Destroy()
+                        end
                     end
                 end
             end
@@ -959,6 +993,10 @@ function RemoveWeaponFromRenderList(gun)
         weapontable[gun] = nil
     end
 end
+
+
+
+
 
 task.spawn(function()
     while not initialized do
