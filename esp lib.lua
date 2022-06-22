@@ -820,8 +820,8 @@ function AddToRenderList(plr)
                 if utility:IsAlive(plr) then
                     local character = utility:GetCharacter(plr)
 
-                    if character:WaitForChild("highlight", 3) then
-                        character.highlight:Destroy()
+                    if drawingshit[plr.Name].highlight then
+                        drawingshit[plr.Name].highlight:Destroy()
                     end
 
                     if plr.TeamColor == LocalPlayer.TeamColor then
@@ -852,8 +852,8 @@ function AddToRenderList(plr)
             if esp_settings.Visuals.Outlines then
                 if utility:IsAlive(plr) then
                     local character = utility:GetCharacter(plr)
-                    if character:WaitForChild("highlight", 3) then
-                        character.highlight:Destroy()
+                    if drawingshit[plr.Name].highlight then
+                        drawingshit[plr.Name].highlight:Destroy()
                     end
                     if plr.TeamColor == LocalPlayer.TeamColor then
                         if esp_settings.Teams.Outlines then
@@ -883,8 +883,8 @@ function AddToRenderList(plr)
             if esp_settings.Visuals.VisibleOutlines then
                 if utility:IsAlive(plr) then
                     local character = utility:GetCharacter(plr)
-                    if character:WaitForChild("highlight", 3) then
-                        character.highlight:Destroy()
+                    if drawingshit[plr.Name].highlight then
+                        drawingshit[plr.Name].highlight:Destroy()
                     end
                     if plr.TeamColor == LocalPlayer.TeamColor then
                         if esp_settings.Teams.VisibleOutlines then
