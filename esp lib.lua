@@ -927,7 +927,7 @@ function AddWeaponsToRenderList(gun)
 
     local text = Drawing.new("Text")
     text.Visible = false
-    text.Text = gun.Gun.Value
+    text.Text = gun:FindFirstChild("Gun") and gun.Gun.Value or "Error getting weapon name"
     text.Color = esp_settings.Colors.WeaponColor
     text.Size = esp_settings.Other.WeaponTextSize
     text.Font = esp_settings.Other.WeaponFontFamily
