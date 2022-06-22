@@ -820,7 +820,7 @@ function AddToRenderList(plr)
                         vischams(plr, false)
                         character:FindFirstChild("highlight").Enabled = true
                     end
-                    character:FindFirstChild("highlight").Enabled = true
+                    -- character:FindFirstChild("highlight").Enabled = true
                 else
                     if drawingshit[plr.Name].highlight ~= nil then
                         drawingshit[plr.Name].highlight:Destroy()
