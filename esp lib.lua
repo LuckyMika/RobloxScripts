@@ -233,7 +233,7 @@ defaultsettings = {
         DistanceTextOutline = false,
         DistanceFontFamily = Drawing.Fonts["UI"],
         
-        ChamsTransparency = 0,
+        ChamsTransparency = 0.5,
 
         VisibleChamsTransparency = 0,
 
@@ -301,64 +301,6 @@ function library:Toggle(option, value)
 end
 
 local drawingshit = {}
-
-function chams(plr, friendly)
-    local character = utility:GetCharacter(plr)
-    local cham = Instance.new("Highlight",character)
-    cham.Enabled = false
-    cham.Name = "highlight"
-    cham.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    cham.OutlineColor = Color3.fromRGB(0,0,0)
-    cham.FillColor = friendly and esp_settings.Colors.ChamsTeamColor or esp_settings.Colors.ChamsEnemyColor
-    cham.FillTransparency = esp_settings.Other.ChamsTransparency
-    cham.OutlineTransparency = 1
-
-    drawingshit[plr.Name].highlight = cham
-
-end
-
-function outlines(plr, friendly)
-    local character = utility:GetCharacter(plr)
-    local outline = Instance.new("Highlight",character)
-    outline.Enabled = false
-    outline.Name = "highlight"
-    outline.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    outline.FillColor = Color3.fromRGB(0,0,0)
-    outline.OutlineColor = friendly and esp_settings.Colors.OutlinesTeamColor or esp_settings.Colors.OutlinesEnemyColor
-    outline.OutlineTransparency = esp_settings.Other.OutlinesTransparency
-    outline.FillTransparency = 1
-    
-    drawingshit[plr.Name].highlight = outline
-end
-
-function vischams(plr, friendly)
-    local character = utility:GetCharacter(plr)
-    local vischam = Instance.new("Highlight",character)
-    vischam.Enabled = false
-    vischam.Name = "highlight"
-    vischam.DepthMode = Enum.HighlightDepthMode.Occluded
-    vischam.OutlineColor = Color3.fromRGB(0,0,0)
-    vischam.FillColor = friendly and esp_settings.Colors.ChamsTeamColor or esp_settings.Colors.ChamsEnemyColor
-    vischam.FillTransparency = esp_settings.Other.ChamsTransparency
-    vischam.OutlineTransparency = 1
-
-    drawingshit[plr.Name].highlight = vischam
-
-end
-
-function visoutlines(plr, friendly)
-    local character = utility:GetCharacter(plr)
-    local visoutline = Instance.new("Highlight",character)
-    visoutline.Enabled = false
-    visoutline.Name = "highlight"
-    visoutline.DepthMode = Enum.HighlightDepthMode.Occluded
-    visoutline.FillColor = Color3.fromRGB(0,0,0)
-    visoutline.OutlineColor = friendly and esp_settings.Colors.VisibleOutlinesTeamColor or esp_settings.Colors.VisibleOutlinesEnemyColor
-    visoutline.OutlineTransparency = esp_settings.Other.VisibleOutlinesTransparency
-    visoutline.FillTransparency = 1
-    
-    drawingshit[plr.Name].highlight = visoutline
-end
 
 function AddToRenderList(plr)
     
@@ -872,142 +814,6 @@ function AddToRenderList(plr)
                 end
             else
                 healthbar.Visible = false
-            end
-
-            if esp_settings.Visuals.Chams then
-                if utility:IsAlive(plr) then
-                    local character = utility:GetCharacter(plr)
-
-                    if drawingshit[plr.Name].highlight then
-                        drawingshit[plr.Name].highlight:Destroy()
-                    end
-
-                    if plr.TeamColor == LocalPlayer.TeamColor then
-                        if esp_settings.Teams.Chams then
-                            chams(plr, true)
-                        end
-                    else
-                        chams(plr, false)
-                    end
-                    if drawingshit[plr.Name].highlight then
-                        if drawingshit[plr.Name].highlight.Parent then
-                            drawingshit[plr.Name].highlight.Enabled = true
-                        else
-                            drawingshit[plr.Name].highlight:Destroy()
-                        end
-                    end
-                else
-                    if drawingshit[plr.Name].highlight then
-                        if drawingshit[plr.Name].highlight.Parent then
-                            drawingshit[plr.Name].highlight.Enabled = false
-                        else
-                            drawingshit[plr.Name].highlight:Destroy()
-                        end
-                    end
-                end
-            else
-                drawingshit[plr.Name].highlight:Destroy()
-            end
-
-            if esp_settings.Visuals.VisibleChams then
-                if utility:IsAlive(plr) then
-                    local character = utility:GetCharacter(plr)
-
-                    if drawingshit[plr.Name].highlight then
-                        drawingshit[plr.Name].highlight:Destroy()
-                    end
-
-                    if plr.TeamColor == LocalPlayer.TeamColor then
-                        if esp_settings.Teams.VisibleChams then
-                            vischams(plr, true)
-                        end
-                    else
-                        vischams(plr, false)
-                    end
-                    if character.highlight then
-                        if character.highlight.Parent then
-                            character.highlight.Enabled = true
-                        else
-                            character.highlight:Destroy()
-                        end
-                    end
-                else
-                    if drawingshit[plr.Name].highlight then
-                        if drawingshit[plr.Name].highlight.Parent then
-                            drawingshit[plr.Name].highlight.Enabled = false
-                        else
-                            drawingshit[plr.Name].highlight:Destroy()
-                        end
-                    end
-                end
-            else
-                drawingshit[plr.Name].highlight:Destroy()
-            end
-
-            if esp_settings.Visuals.Outlines then
-                if utility:IsAlive(plr) then
-                    local character = utility:GetCharacter(plr)
-                    if drawingshit[plr.Name].highlight then
-                        drawingshit[plr.Name].highlight:Destroy()
-                    end
-                    if plr.TeamColor == LocalPlayer.TeamColor then
-                        if esp_settings.Teams.Outlines then
-                            outlines(plr, true)
-                        end
-                    else
-                        outlines(plr, false)
-                    end
-                    if drawingshit[plr.Name].highlight then
-                        if drawingshit[plr.Name].highlight.Parent then
-                            drawingshit[plr.Name].highlight.Enabled = true
-                        else
-                            drawingshit[plr.Name].highlight:Destroy()
-                        end
-                    end
-                else
-                    if drawingshit[plr.Name].highlight then
-                        if drawingshit[plr.Name].highlight.Parent then
-                            drawingshit[plr.Name].highlight.Enabled = false
-                        else
-                            drawingshit[plr.Name].highlight:Destroy()
-                        end
-                    end
-                end
-            else
-                drawingshit[plr.Name].highlight:Destroy()
-            end
-
-            if esp_settings.Visuals.VisibleOutlines then
-                if utility:IsAlive(plr) then
-                    local character = utility:GetCharacter(plr)
-                    if drawingshit[plr.Name].highlight then
-                        drawingshit[plr.Name].highlight:Destroy()
-                    end
-                    if plr.TeamColor == LocalPlayer.TeamColor then
-                        if esp_settings.Teams.VisibleOutlines then
-                            visoutlines(plr, true)
-                        end
-                    else
-                        visoutlines(plr, false)
-                    end
-                    if drawingshit[plr.Name].highlight then
-                        if drawingshit[plr.Name].highlight.Parent then
-                            drawingshit[plr.Name].highlight.Enabled = true
-                        else
-                            drawingshit[plr.Name].highlight:Destroy()
-                        end
-                    end
-                else
-                    if drawingshit[plr.Name].highlight then
-                        if drawingshit[plr.Name].highlight.Parent then
-                            drawingshit[plr.Name].highlight.Enabled = false
-                        else
-                            drawingshit[plr.Name].highlight:Destroy()
-                        end
-                    end
-                end
-            else
-                drawingshit[plr.Name].highlight:Destroy()
             end
 
             if esp_settings.Visuals.Crosshair then
