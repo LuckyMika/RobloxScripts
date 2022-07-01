@@ -1,3 +1,6 @@
+---------------------------------------------
+--             VERSION 1.1.7               --
+---------------------------------------------
 local LocalPlayer = game.Players.LocalPlayer
 local players = game.Players
 local rs = game:GetService("RunService")
@@ -11,7 +14,7 @@ animations = {}
 -- Framework
 getgenv().client = {};
 do
-    local gc = getgc(true)  
+    local gc = getgc(true)
     for i = #gc, 1, -1 do
         local v = gc[i]
         local type = type(v)
@@ -41,7 +44,7 @@ do
                 table.insert(animations, v)
             end
 
-            
+
         end
     end
 end
@@ -108,7 +111,7 @@ end
 function utility:wtvp(p) -- vector
     p = workspace.CurrentCamera:WorldToViewportPoint(p)
     return Vector2.new(p.X, p.Y), p.Z
-end 
+end
 
 function utility:get2dcorner(cf, s)
     local Top = s.Y / 2
@@ -177,31 +180,31 @@ defaultsettings = {
     Colors = {
         BoxEnemyColor = Color3.fromRGB(255,0,0),
         BoxTeamColor = Color3.fromRGB(0,0,255),
-        
+
         TracersEnemyColor = Color3.fromRGB(255,0,0),
         TracersTeamColor = Color3.fromRGB(0,0,255),
-        
+
         SkeletonEnemyColor = Color3.fromRGB(255,0,0),
         SkeletonTeamColor = Color3.fromRGB(0,0,255),
-        
+
         OutlinesEnemyColor = Color3.fromRGB(255,0,0),
         OutlinesTeamColor = Color3.fromRGB(0,0,255),
 
         VisibleOutlinesEnemyColor = Color3.fromRGB(255,0,0),
         VisibleOutlinesTeamColor = Color3.fromRGB(0,0,255),
-        
+
         ChamsEnemyColor = Color3.fromRGB(255,0,0),
         ChamsTeamColor = Color3.fromRGB(0,0,255),
-        
+
         VisibleChamsEnemyColor = Color3.fromRGB(255,0,0),
         VisibleChamsTeamColor = Color3.fromRGB(0,0,255),
 
         NameEnemyColor = Color3.fromRGB(255,0,0),
         NameTeamColor = Color3.fromRGB(0,0,255),
-        
+
         DistanceEnemyColor = Color3.fromRGB(255,0,0),
         DistanceTeamColor = Color3.fromRGB(0,0,255),
-        
+
         HealthbarFullColor = Color3.fromRGB(0,255,0),
         HealthbarEmptyColor = Color3.fromRGB(255,0,0),
         WeaponColor = Color3.fromRGB(0,255,0),
@@ -212,27 +215,27 @@ defaultsettings = {
         BoxesOutline = false,
         BoxesThickness = 1,
         BoxesTransparency = 1,
-        
+
         TracerThickness = 1,
         TracerTransparency = 0.5,
         TracerOrigin = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y),
         TracerPart = "head",
-        
+
         NameTextSize = 15,
         NameTextOutline = false,
         NameFontFamily = Drawing.Fonts["UI"],
-        
+
         WeaponTextSize = 15,
         WeaponTextOutline = false,
         WeaponFontFamily = Drawing.Fonts["UI"],
-        
-        SkeletonThickness = 1,
-        SkeletonTransparency = 0,
+
+        SkeletonThickness = 2,
+        SkeletonTransparency = 0.5,
 
         DistanceTextSize = 15,
         DistanceTextOutline = false,
         DistanceFontFamily = Drawing.Fonts["UI"],
-        
+
         ChamsTransparency = 0.5,
 
         VisibleChamsTransparency = 0,
@@ -247,7 +250,7 @@ defaultsettings = {
         CrosshairThickness = 1,
         CrosshairTransparency = 1,
 
-        RefreshRate = 500
+        MaxDistance = 1000
     }
 }
 
@@ -303,11 +306,11 @@ end
 local drawingshit = {}
 
 function AddToRenderList(plr)
-    
+
     if plr ~= LocalPlayer and drawingshit[plr] == nil then
-        
+
         drawingshit[plr.Name] = {}
-        
+
         local name = Drawing.new("Text")
         name.Visible = false
         name.Text = plr.Name
@@ -316,13 +319,13 @@ function AddToRenderList(plr)
         name.Outline = esp_settings.Other.NameTextOutline
         name.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.NameTeamColor or esp_settings.Colors.NameEnemyColor
         name.Font = esp_settings.Other.NameFontFamily
-        
+
         local box = Drawing.new("Square")
         box.Visible = false
         box.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.BoxTeamColor or esp_settings.Colors.BoxEnemyColor
         box.Thickness = esp_settings.Other.BoxesThickness
         box.Transparency = esp_settings.Other.BoxesTransparency
-        
+
         local tracer = Drawing.new("Line")
         tracer.Visible = false
         tracer.From = esp_settings.Other.TracerOrigin
@@ -330,7 +333,7 @@ function AddToRenderList(plr)
         tracer.Thickness = esp_settings.Other.TracerThickness
         tracer.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.TracersTeamColor or esp_settings.Colors.TracersEnemyColor
         tracer.Transparency = esp_settings.Other.TracerTransparency
-        
+
         local distance = Drawing.new("Text")
         distance.Visible = false
         distance.Center = true
@@ -338,102 +341,100 @@ function AddToRenderList(plr)
         distance.Outline = esp_settings.Other.DistanceTextOutline
         distance.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.DistanceTeamColor or esp_settings.Colors.DistanceEnemyColor
         distance.Font = esp_settings.Other.DistanceFontFamily
-        
+
         local healthbar = Drawing.new("Square")
         healthbar.Visible = false
         healthbar.Filled = true
         healthbar.Color = esp_settings.Colors.HealthbarEmptyColor:lerp(esp_settings.Colors.HealthbarFullColor, utility:GetHealth(plr)/100);
-        
+
         local crosshairvertical = Drawing.new("Line")
         crosshairvertical.Visible = false
         crosshairvertical.Thickness = esp_settings.Other.CrosshairThickness
         crosshairvertical.Transparency = esp_settings.Other.CrosshairTransparency
         crosshairvertical.Color = esp_settings.Colors.CrosshairColor
-        
+
         local crosshairhorizontal = Drawing.new("Line")
         crosshairhorizontal.Visible = false
         crosshairhorizontal.Thickness = esp_settings.Other.CrosshairThickness
         crosshairhorizontal.Transparency = esp_settings.Other.CrosshairTransparency
         crosshairhorizontal.Color = esp_settings.Colors.CrosshairColor
-        
-        local drawtable = {}
 
-        drawtable.headline = Drawing.new("Line")
-        drawtable.headline.Visible = false
-        drawtable.headline.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
-        drawtable.headline.Thickness = esp_settings.Other.SkeletonThickness
-        drawtable.headline.Transparency = esp_settings.Other.SkeletonTransparency
-        
-        
-        drawtable.torsoline = Drawing.new("Line")
-        drawtable.torsoline.Visible = false
-        drawtable.torsoline.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
-        drawtable.torsoline.Thickness = esp_settings.Other.SkeletonThickness
-        drawtable.torsoline.Transparency = esp_settings.Other.SkeletonTransparency
-        
-        
-        drawtable.leftarmline = Drawing.new("Line")
-        drawtable.leftarmline.Visible = false
-        drawtable.leftarmline.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
-        drawtable.leftarmline.Thickness = esp_settings.Other.SkeletonThickness
-        drawtable.leftarmline.Transparency = esp_settings.Other.SkeletonTransparency
-        
-        
-        drawtable.rightarmline = Drawing.new("Line")
-        drawtable.rightarmline.Visible = false
-        drawtable.rightarmline.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
-        drawtable.rightarmline.Thickness = esp_settings.Other.SkeletonThickness
-        drawtable.rightarmline.Transparency = esp_settings.Other.SkeletonTransparency
-        
-        
-        drawtable.leftlegline = Drawing.new("Line")
-        drawtable.leftlegline.Visible = false
-        drawtable.leftlegline.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
-        drawtable.leftlegline.Thickness = esp_settings.Other.SkeletonThickness
-        drawtable.leftlegline.Transparency = esp_settings.Other.SkeletonTransparency
-        
-        
-        drawtable.rightlegline = Drawing.new("Line")
-        drawtable.rightlegline.Visible = false
-        drawtable.rightlegline.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
-        drawtable.rightlegline.Thickness = esp_settings.Other.SkeletonThickness
-        drawtable.rightlegline.Transparency = esp_settings.Other.SkeletonTransparency
-        
-        drawtable.leftupperconnector = Drawing.new("Line")
-        drawtable.leftupperconnector.Visible = false
-        drawtable.leftupperconnector.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
-        drawtable.leftupperconnector.Thickness = esp_settings.Other.SkeletonThickness
-        drawtable.leftupperconnector.Transparency = esp_settings.Other.SkeletonTransparency
-        
-        drawtable.rightupperconnector = Drawing.new("Line")
-        drawtable.rightupperconnector.Visible = false
-        drawtable.rightupperconnector.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
-        drawtable.rightupperconnector.Thickness = esp_settings.Other.SkeletonThickness
-        drawtable.rightupperconnector.Transparency = esp_settings.Other.SkeletonTransparency
-        
-        drawtable.leftlowerconnector = Drawing.new("Line")
-        drawtable.leftlowerconnector.Visible = false
-        drawtable.leftlowerconnector.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
-        drawtable.leftlowerconnector.Thickness = esp_settings.Other.SkeletonThickness
-        drawtable.leftlowerconnector.Transparency = esp_settings.Other.SkeletonTransparency
-        
-        drawtable.rightlowerconnector = Drawing.new("Line")
-        drawtable.rightlowerconnector.Visible = false
-        drawtable.rightlowerconnector.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
-        drawtable.rightlowerconnector.Thickness = esp_settings.Other.SkeletonThickness
-        drawtable.rightlowerconnector.Transparency = esp_settings.Other.SkeletonTransparency
-        
-        drawingshit[plr.Name].headline = drawtable.headline
-        drawingshit[plr.Name].torsoline = drawtable.torsoline
-        drawingshit[plr.Name].leftarmline = drawtable.leftarmline
-        drawingshit[plr.Name].rightarmline = drawtable.rightarmline
-        drawingshit[plr.Name].leftlegline = drawtable.leftlegline
-        drawingshit[plr.Name].rightlegline = drawtable.rightlegline
-        drawingshit[plr.Name].leftupperconnector = drawtable.leftupperconnector
-        drawingshit[plr.Name].rightupperconnector = drawtable.rightupperconnector
-        drawingshit[plr.Name].leftlowerconnector = drawtable.leftlowerconnector
-        drawingshit[plr.Name].rightlowerconnector = drawtable.rightlowerconnector
-        
+        local headline = Drawing.new("Line")
+        headline.Visible = false
+        headline.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
+        headline.Thickness = esp_settings.Other.SkeletonThickness
+        headline.Transparency = esp_settings.Other.SkeletonTransparency
+
+
+        local torsoline = Drawing.new("Line")
+        torsoline.Visible = false
+        torsoline.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
+        torsoline.Thickness = esp_settings.Other.SkeletonThickness
+        torsoline.Transparency = esp_settings.Other.SkeletonTransparency
+
+
+        local leftarmline = Drawing.new("Line")
+        leftarmline.Visible = false
+        leftarmline.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
+        leftarmline.Thickness = esp_settings.Other.SkeletonThickness
+        leftarmline.Transparency = esp_settings.Other.SkeletonTransparency
+
+
+        local rightarmline = Drawing.new("Line")
+        rightarmline.Visible = false
+        rightarmline.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
+        rightarmline.Thickness = esp_settings.Other.SkeletonThickness
+        rightarmline.Transparency = esp_settings.Other.SkeletonTransparency
+
+
+        local leftlegline = Drawing.new("Line")
+        leftlegline.Visible = false
+        leftlegline.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
+        leftlegline.Thickness = esp_settings.Other.SkeletonThickness
+        leftlegline.Transparency = esp_settings.Other.SkeletonTransparency
+
+
+        local rightlegline = Drawing.new("Line")
+        rightlegline.Visible = false
+        rightlegline.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
+        rightlegline.Thickness = esp_settings.Other.SkeletonThickness
+        rightlegline.Transparency = esp_settings.Other.SkeletonTransparency
+
+        local leftupperconnector = Drawing.new("Line")
+        leftupperconnector.Visible = false
+        leftupperconnector.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
+        leftupperconnector.Thickness = esp_settings.Other.SkeletonThickness
+        leftupperconnector.Transparency = esp_settings.Other.SkeletonTransparency
+
+        local rightupperconnector = Drawing.new("Line")
+        rightupperconnector.Visible = false
+        rightupperconnector.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
+        rightupperconnector.Thickness = esp_settings.Other.SkeletonThickness
+        rightupperconnector.Transparency = esp_settings.Other.SkeletonTransparency
+
+        local leftlowerconnector = Drawing.new("Line")
+        leftlowerconnector.Visible = false
+        leftlowerconnector.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
+        leftlowerconnector.Thickness = esp_settings.Other.SkeletonThickness
+        leftlowerconnector.Transparency = esp_settings.Other.SkeletonTransparency
+
+        local rightlowerconnector = Drawing.new("Line")
+        rightlowerconnector.Visible = false
+        rightlowerconnector.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.SkeletonTeamColor or esp_settings.Colors.SkeletonEnemyColor
+        rightlowerconnector.Thickness = esp_settings.Other.SkeletonThickness
+        rightlowerconnector.Transparency = esp_settings.Other.SkeletonTransparency
+
+        drawingshit[plr.Name].headline = headline
+        drawingshit[plr.Name].torsoline = torsoline
+        drawingshit[plr.Name].leftarmline = leftarmline
+        drawingshit[plr.Name].rightarmline = rightarmline
+        drawingshit[plr.Name].leftlegline = leftlegline
+        drawingshit[plr.Name].rightlegline = rightlegline
+        drawingshit[plr.Name].leftupperconnector = leftupperconnector
+        drawingshit[plr.Name].rightupperconnector = rightupperconnector
+        drawingshit[plr.Name].leftlowerconnector = leftlowerconnector
+        drawingshit[plr.Name].rightlowerconnector = rightlowerconnector
+
         drawingshit[plr.Name].name = name
         drawingshit[plr.Name].box = box
         drawingshit[plr.Name].tracer = tracer
@@ -441,30 +442,34 @@ function AddToRenderList(plr)
         drawingshit[plr.Name].healthbar = healthbar
         drawingshit[plr.Name].crosshairvertical = crosshairvertical
         drawingshit[plr.Name].crosshairhorizontal = crosshairhorizontal
-        
+
         rs:BindToRenderStep(plr.Name .. "Mika Esp", 1, function()
-            
+
             if esp_settings.Visuals.Tracers then
                 if utility:IsAlive(plr) then
-                    assert(utility:GetBodypart(plr, esp_settings.Other.TracerPart) ~= nil, "`" .. esp_settings.Other.TracerPart .. "` Doesn't exist in `" .. plr.Name .. ".Character`!")
-                    local vec, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, esp_settings.Other.TracerPart).Position)
-                    if onscreen then
-                        if plr.TeamColor == LocalPlayer.TeamColor then
-                            if esp_settings.Teams.Tracers then
+                    if LocalPlayer.Character and (utility:GetBodypart(plr, "torso").Position - LocalPlayer.Character.Torso.Position).Magnitude <= esp_settings.Other.MaxDistance then
+                        assert(utility:GetBodypart(plr, esp_settings.Other.TracerPart) ~= nil, "`" .. esp_settings.Other.TracerPart .. "` Doesn't exist in `" .. plr.Name .. ".Character`!")
+                        local vec, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, esp_settings.Other.TracerPart).Position)
+                        if onscreen then
+                            if plr.TeamColor == LocalPlayer.TeamColor then
+                                if esp_settings.Teams.Tracers then
+                                    tracer.To = Vector2.new(vec.X, vec.Y)
+                                    tracer.Thickness = esp_settings.Other.TracerThickness
+                                    tracer.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.TracersTeamColor or esp_settings.Colors.TracersEnemyColor
+                                    tracer.Transparency = esp_settings.Other.TracerTransparency
+                                    tracer.Visible = true
+                                else
+                                    tracer.Visible = false
+                                end
+                            else
                                 tracer.To = Vector2.new(vec.X, vec.Y)
                                 tracer.Thickness = esp_settings.Other.TracerThickness
                                 tracer.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.TracersTeamColor or esp_settings.Colors.TracersEnemyColor
                                 tracer.Transparency = esp_settings.Other.TracerTransparency
                                 tracer.Visible = true
-                            else
-                                tracer.Visible = false
                             end
                         else
-                            tracer.To = Vector2.new(vec.X, vec.Y)
-                            tracer.Thickness = esp_settings.Other.TracerThickness
-                            tracer.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.TracersTeamColor or esp_settings.Colors.TracersEnemyColor
-                            tracer.Transparency = esp_settings.Other.TracerTransparency
-                            tracer.Visible = true
+                            tracer.Visible = false
                         end
                     else
                         tracer.Visible = false
@@ -475,33 +480,37 @@ function AddToRenderList(plr)
             else
                 tracer.Visible = false
             end
-            
-            if esp_settings.Visuals.Boxes then
+
+        if esp_settings.Visuals.Boxes then
             if utility:IsAlive(plr) then
-                local data = utility:GetBoundingBox(utility:GetCharacter(plr))
-                local boxpos = Vector2.new(math.floor(data.pos.bottomRight.X), math.floor(data.pos.bottomRight.Y))
-                local Width, Height = math.floor(data.pos.topLeft.X - data.pos.topRight.X), math.floor(data.pos.topLeft.Y - data.pos.bottomLeft.Y)
-                local boxsize = Vector2.new(Width, Height)
-                local pos, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
-                if onscreen then
-                    if plr.TeamColor == LocalPlayer.TeamColor then
-                        if esp_settings.Teams.Boxes then
+                if LocalPlayer.Character and (utility:GetBodypart(plr, "torso").Position - LocalPlayer.Character.Torso.Position).Magnitude <= esp_settings.Other.MaxDistance then
+                    local data = utility:GetBoundingBox(utility:GetCharacter(plr))
+                    local boxpos = Vector2.new(math.floor(data.pos.bottomRight.X), math.floor(data.pos.bottomRight.Y))
+                    local Width, Height = math.floor(data.pos.topLeft.X - data.pos.topRight.X), math.floor(data.pos.topLeft.Y - data.pos.bottomLeft.Y)
+                    local boxsize = Vector2.new(Width, Height)
+                    local pos, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
+                    if onscreen then
+                        if plr.TeamColor == LocalPlayer.TeamColor then
+                            if esp_settings.Teams.Boxes then
+                                box.Size = boxsize
+                                box.Position = boxpos
+                                box.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.BoxTeamColor or esp_settings.Colors.BoxEnemyColor
+                                box.Thickness = esp_settings.Other.BoxesThickness
+                                box.Transparency = esp_settings.Other.BoxesTransparency
+                                box.Visible = true
+                            else
+                                box.Visible = false
+                            end
+                        else
                             box.Size = boxsize
                             box.Position = boxpos
                             box.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.BoxTeamColor or esp_settings.Colors.BoxEnemyColor
                             box.Thickness = esp_settings.Other.BoxesThickness
                             box.Transparency = esp_settings.Other.BoxesTransparency
                             box.Visible = true
-                        else
-                            box.Visible = false
                         end
                     else
-                        box.Size = boxsize
-                        box.Position = boxpos
-                        box.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.BoxTeamColor or esp_settings.Colors.BoxEnemyColor
-                        box.Thickness = esp_settings.Other.BoxesThickness
-                        box.Transparency = esp_settings.Other.BoxesTransparency
-                        box.Visible = true
+                        box.Visible = false
                     end
                 else
                     box.Visible = false
@@ -515,202 +524,211 @@ function AddToRenderList(plr)
 
         if esp_settings.Visuals.Skeletons then
             if utility:IsAlive(plr) then
-                local Vector, onScreen = Camera:worldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
+                if LocalPlayer.Character and (utility:GetBodypart(plr, "torso").Position - LocalPlayer.Character.Torso.Position).Magnitude <= esp_settings.Other.MaxDistance then
+                    local Vector, onScreen = Camera:worldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
 
-                drawtable.headline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Head").Position)) -- Head
-                drawtable.torsoline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- Upper Torso
-                drawtable.leftarmline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "larm").Position + Vector3.new(0,-1,0))) -- LowerLeftArm
-                drawtable.rightarmline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rarm").Position + Vector3.new(0,-1,0))) -- LowerRightarm
-                drawtable.leftlegline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "lleg").Position + Vector3.new(0,-1,0))) -- LowerLeftLeg
-                drawtable.rightlegline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rleg").Position + Vector3.new(0,-1,0))) -- LowerRightLeg
+                    headline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Head").Position)) -- Head
 
-                drawtable.leftupperconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "larm").Position + Vector3.new(0,1,0))) -- UpperLeftArm
-                drawtable.rightupperconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rarm").Position + Vector3.new(0,1,0))) -- UpperRightArm
+                    torsoline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- Upper Torso
 
-                drawtable.leftlowerconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "lleg").Position + Vector3.new(0,1,0))) -- UpperLeftLeg
-                drawtable.rightlowerconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rleg").Position + Vector3.new(0,1,0))) -- UpperRightLeg
+                    leftarmline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "larm").Position + Vector3.new(0,-1,0))) -- LowerLeftArm
 
-                drawtable.headline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- Upper Torso
-                drawtable.torsoline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0))) -- Lower Torso
-                drawtable.leftarmline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "larm").Position + Vector3.new(0,1,0))) -- UpperLeftArm
-                drawtable.rightarmline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rarm").Position + Vector3.new(0,1,0))) -- UpperRightArm
-                drawtable.leftlegline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "lleg").Position + Vector3.new(0,1,0))) -- UpperLeftLeg
-                drawtable.rightlegline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rleg").Position + Vector3.new(0,1,0))) -- UpperRightLeg
+                    rightarmline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rarm").Position + Vector3.new(0,-1,0))) -- LowerRightarm
 
-                drawtable.leftupperconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- UpperTorso
-                drawtable.rightupperconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- UpperTorso
+                    leftlegline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "lleg").Position + Vector3.new(0,-1,0))) -- LowerLeftLeg
 
-                drawtable.leftlowerconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0))) -- LowerTorso
-                drawtable.rightlowerconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0))) -- LowerTorso
+                    rightlegline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rleg").Position + Vector3.new(0,-1,0))) -- LowerRightLeg
 
-                if onScreen then
-                    if plr.TeamColor == LocalPlayer.TeamColor then
-                        if esp_settings.Teams.Skeletons then
-                            drawtable.headline.Color = esp_settings.Colors.SkeletonTeamColor
-                            drawtable.headline.Thickness = esp_settings.Other.SkeletonThickness
-                            drawtable.headline.Transparency = esp_settings.Other.SkeletonTransparency
-                            drawtable.headline.Visible = true
+                    leftupperconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "larm").Position + Vector3.new(0,1,0))) -- UpperLeftArm
 
-                            drawtable.torsoline.Color = esp_settings.Colors.SkeletonTeamColor
-                            drawtable.torsoline.Thickness = esp_settings.Other.SkeletonThickness
-                            drawtable.torsoline.Transparency = esp_settings.Other.SkeletonTransparency
-                            drawtable.torsoline.Visible = true
+                    rightupperconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rarm").Position + Vector3.new(0,1,0))) -- UpperRightArm
 
-                            drawtable.leftarmline.Color = esp_settings.Colors.SkeletonTeamColor
-                            drawtable.leftarmline.Thickness = esp_settings.Other.SkeletonThickness
-                            drawtable.leftarmline.Transparency = esp_settings.Other.SkeletonTransparency
-                            drawtable.leftarmline.Visible = true
+                    leftlowerconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "lleg").Position + Vector3.new(0,1,0))) -- UpperLeftLeg
 
-                            drawtable.rightarmline.Color = esp_settings.Colors.SkeletonTeamColor
-                            drawtable.rightarmline.Thickness = esp_settings.Other.SkeletonThickness
-                            drawtable.rightarmline.Transparency = esp_settings.Other.SkeletonTransparency
-                            drawtable.rightarmline.Visible = true
+                    rightlowerconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rleg").Position + Vector3.new(0,1,0))) -- UpperRightLeg
 
-                            drawtable.leftlegline.Color = esp_settings.Colors.SkeletonTeamColor
-                            drawtable.leftlegline.Thickness = esp_settings.Other.SkeletonThickness
-                            drawtable.leftlegline.Transparency = esp_settings.Other.SkeletonTransparency
-                            drawtable.leftlegline.Visible = true
 
-                            drawtable.rightlegline.Color = esp_settings.Colors.SkeletonTeamColor
-                            drawtable.rightlegline.Thickness = esp_settings.Other.SkeletonThickness
-                            drawtable.rightlegline.Transparency = esp_settings.Other.SkeletonTransparency
-                            drawtable.rightlegline.Visible = true
 
-                            drawtable.leftupperconnector.Color = esp_settings.Colors.SkeletonTeamColor
-                            drawtable.leftupperconnector.Thickness = esp_settings.Other.SkeletonThickness
-                            drawtable.leftupperconnector.Transparency = esp_settings.Other.SkeletonTransparency
-                            drawtable.leftupperconnector.Visible = true
+                    headline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- Upper Torso
 
-                            drawtable.rightupperconnector.Color = esp_settings.Colors.SkeletonTeamColor
-                            drawtable.rightupperconnector.Thickness = esp_settings.Other.SkeletonThickness
-                            drawtable.rightupperconnector.Transparency = esp_settings.Other.SkeletonTransparency
-                            drawtable.rightupperconnector.Visible = true
+                    torsoline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0))) -- Lower Torso
 
-                            drawtable.leftlowerconnector.Color = esp_settings.Colors.SkeletonTeamColor
-                            drawtable.leftlowerconnector.Thickness = esp_settings.Other.SkeletonThickness
-                            drawtable.leftlowerconnector.Transparency = esp_settings.Other.SkeletonTransparency
-                            drawtable.leftlowerconnector.Visible = true
+                    leftarmline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "larm").Position + Vector3.new(0,1,0))) -- UpperLeftArm
 
-                            drawtable.rightlowerconnector.Color = esp_settings.Colors.SkeletonTeamColor
-                            drawtable.rightlowerconnector.Thickness = esp_settings.Other.SkeletonThickness
-                            drawtable.rightlowerconnector.Transparency = esp_settings.Other.SkeletonTransparency
-                            drawtable.rightlowerconnector.Visible = true
+                    rightarmline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rarm").Position + Vector3.new(0,1,0))) -- UpperRightArm
+
+                    leftlegline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "lleg").Position + Vector3.new(0,1,0))) -- UpperLeftLeg
+
+                    rightlegline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rleg").Position + Vector3.new(0,1,0))) -- UpperRightLeg
+
+                    rightupperconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- UpperTorso
+
+                    rightlowerconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0))) -- LowerTorso
+
+                    leftupperconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- UpperTorso
+
+                    leftlowerconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0))) -- LowerTorso
+
+                    if onScreen then
+                        if plr.TeamColor == LocalPlayer.TeamColor then
+                            if esp_settings.Teams.Skeletons then
+                                headline.Color = esp_settings.Colors.SkeletonTeamColor
+                                headline.Thickness = esp_settings.Other.SkeletonThickness
+                                headline.Transparency = esp_settings.Other.SkeletonTransparency
+                                headline.Visible = true
+                                torsoline.Color = esp_settings.Colors.SkeletonTeamColor
+                                torsoline.Thickness = esp_settings.Other.SkeletonThickness
+                                torsoline.Transparency = esp_settings.Other.SkeletonTransparency
+                                torsoline.Visible = true
+                                leftarmline.Color = esp_settings.Colors.SkeletonTeamColor
+                                leftarmline.Thickness = esp_settings.Other.SkeletonThickness
+                                leftarmline.Transparency = esp_settings.Other.SkeletonTransparency
+                                leftarmline.Visible = true
+                                rightarmline.Color = esp_settings.Colors.SkeletonTeamColor
+                                rightarmline.Thickness = esp_settings.Other.SkeletonThickness
+                                rightarmline.Transparency = esp_settings.Other.SkeletonTransparency
+                                rightarmline.Visible = true
+                                leftlegline.Color = esp_settings.Colors.SkeletonTeamColor
+                                leftlegline.Thickness = esp_settings.Other.SkeletonThickness
+                                leftlegline.Transparency = esp_settings.Other.SkeletonTransparency
+                                leftlegline.Visible = true
+                                rightlegline.Color = esp_settings.Colors.SkeletonTeamColor
+                                rightlegline.Thickness = esp_settings.Other.SkeletonThickness
+                                rightlegline.Transparency = esp_settings.Other.SkeletonTransparency
+                                rightlegline.Visible = true
+                                leftupperconnector.Color = esp_settings.Colors.SkeletonTeamColor
+                                leftupperconnector.Thickness = esp_settings.Other.SkeletonThickness
+                                leftupperconnector.Transparency = esp_settings.Other.SkeletonTransparency
+                                leftupperconnector.Visible = true
+                                rightupperconnector.Color = esp_settings.Colors.SkeletonTeamColor
+                                rightupperconnector.Thickness = esp_settings.Other.SkeletonThickness
+                                rightupperconnector.Transparency = esp_settings.Other.SkeletonTransparency
+                                rightupperconnector.Visible = true
+                                leftlowerconnector.Color = esp_settings.Colors.SkeletonTeamColor
+                                leftlowerconnector.Thickness = esp_settings.Other.SkeletonThickness
+                                leftlowerconnector.Transparency = esp_settings.Other.SkeletonTransparency
+                                leftlowerconnector.Visible = true
+                                rightlowerconnector.Color = esp_settings.Colors.SkeletonTeamColor
+                                rightlowerconnector.Thickness = esp_settings.Other.SkeletonThickness
+                                rightlowerconnector.Transparency = esp_settings.Other.SkeletonTransparency
+                                rightlowerconnector.Visible = true
+                            else
+                                headline.Visible = false
+                                torsoline.Visible = false
+                                leftarmline.Visible = false
+                                rightarmline.Visible = false
+                                leftlegline.Visible = false
+                                rightlegline.Visible = false
+                                leftupperconnector.Visible = false
+                                rightupperconnector.Visible = false
+                                leftlowerconnector.Visible = false
+                                rightlowerconnector.Visible = false
+                            end
                         else
-                            drawtable.headline.Visible = false
+                            headline.Color = esp_settings.Colors.SkeletonEnemyColor
+                            headline.Thickness = esp_settings.Other.SkeletonThickness
+                            headline.Transparency = esp_settings.Other.SkeletonTransparency
+                            headline.Visible = true
 
-                            drawtable.torsoline.Visible = false
+                            torsoline.Color = esp_settings.Colors.SkeletonEnemyColor
+                            torsoline.Thickness = esp_settings.Other.SkeletonThickness
+                            torsoline.Transparency = esp_settings.Other.SkeletonTransparency
+                            torsoline.Visible = true
 
-                            drawtable.leftarmline.Visible = false
+                            leftarmline.Color = esp_settings.Colors.SkeletonEnemyColor
+                            leftarmline.Thickness = esp_settings.Other.SkeletonThickness
+                            leftarmline.Transparency = esp_settings.Other.SkeletonTransparency
+                            leftarmline.Visible = true
 
-                            drawtable.rightarmline.Visible = false
+                            rightarmline.Color = esp_settings.Colors.SkeletonEnemyColor
+                            rightarmline.Thickness = esp_settings.Other.SkeletonThickness
+                            rightarmline.Transparency = esp_settings.Other.SkeletonTransparency
+                            rightarmline.Visible = true
 
-                            drawtable.leftlegline.Visible = false
+                            leftlegline.Color = esp_settings.Colors.SkeletonEnemyColor
+                            leftlegline.Thickness = esp_settings.Other.SkeletonThickness
+                            leftlegline.Transparency = esp_settings.Other.SkeletonTransparency
+                            leftlegline.Visible = true
 
-                            drawtable.rightlegline.Visible = false
+                            rightlegline.Color = esp_settings.Colors.SkeletonEnemyColor
+                            rightlegline.Thickness = esp_settings.Other.SkeletonThickness
+                            rightlegline.Transparency = esp_settings.Other.SkeletonTransparency
+                            rightlegline.Visible = true
 
-                            drawtable.leftupperconnector.Visible = false
+                            leftupperconnector.Color = esp_settings.Colors.SkeletonEnemyColor
+                            leftupperconnector.Thickness = esp_settings.Other.SkeletonThickness
+                            leftupperconnector.Transparency = esp_settings.Other.SkeletonTransparency
+                            leftupperconnector.Visible = true
 
-                            drawtable.rightupperconnector.Visible = false
+                            rightupperconnector.Color = esp_settings.Colors.SkeletonEnemyColor
+                            rightupperconnector.Thickness = esp_settings.Other.SkeletonThickness
+                            rightupperconnector.Transparency = esp_settings.Other.SkeletonTransparency
+                            rightupperconnector.Visible = true
 
-                            drawtable.leftlowerconnector.Visible = false
+                            leftlowerconnector.Color = esp_settings.Colors.SkeletonEnemyColor
+                            leftlowerconnector.Thickness = esp_settings.Other.SkeletonThickness
+                            leftlowerconnector.Transparency = esp_settings.Other.SkeletonTransparency
+                            leftlowerconnector.Visible = true
 
-                            drawtable.rightlowerconnector.Visible = false
-
+                            rightlowerconnector.Color = esp_settings.Colors.SkeletonEnemyColor
+                            rightlowerconnector.Thickness = esp_settings.Other.SkeletonThickness
+                            rightlowerconnector.Transparency = esp_settings.Other.SkeletonTransparency
+                            rightlowerconnector.Visible = true
                         end
-                    else
-                        drawtable.headline.Color = esp_settings.Colors.SkeletonEnemyColor
-                        drawtable.headline.Thickness = esp_settings.Other.SkeletonThickness
-                        drawtable.headline.Transparency = esp_settings.Other.SkeletonTransparency
-                        drawtable.headline.Visible = true
-
-                        drawtable.torsoline.Color = esp_settings.Colors.SkeletonEnemyColor
-                        drawtable.torsoline.Thickness = esp_settings.Other.SkeletonThickness
-                        drawtable.torsoline.Transparency = esp_settings.Other.SkeletonTransparency
-                        drawtable.torsoline.Visible = true
-
-                        drawtable.leftarmline.Color = esp_settings.Colors.SkeletonEnemyColor
-                        drawtable.leftarmline.Thickness = esp_settings.Other.SkeletonThickness
-                        drawtable.leftarmline.Transparency = esp_settings.Other.SkeletonTransparency
-                        drawtable.leftarmline.Visible = true
-
-                        drawtable.rightarmline.Color = esp_settings.Colors.SkeletonEnemyColor
-                        drawtable.rightarmline.Thickness = esp_settings.Other.SkeletonThickness
-                        drawtable.rightarmline.Transparency = esp_settings.Other.SkeletonTransparency
-                        drawtable.rightarmline.Visible = true
-
-                        drawtable.leftlegline.Color = esp_settings.Colors.SkeletonEnemyColor
-                        drawtable.leftlegline.Thickness = esp_settings.Other.SkeletonThickness
-                        drawtable.leftlegline.Transparency = esp_settings.Other.SkeletonTransparency
-                        drawtable.leftlegline.Visible = true
-
-                        drawtable.rightlegline.Color = esp_settings.Colors.SkeletonEnemyColor
-                        drawtable.rightlegline.Thickness = esp_settings.Other.SkeletonThickness
-                        drawtable.rightlegline.Transparency = esp_settings.Other.SkeletonTransparency
-                        drawtable.rightlegline.Visible = true
-
-                        drawtable.leftupperconnector.Color = esp_settings.Colors.SkeletonEnemyColor
-                        drawtable.leftupperconnector.Thickness = esp_settings.Other.SkeletonThickness
-                        drawtable.leftupperconnector.Transparency = esp_settings.Other.SkeletonTransparency
-                        drawtable.leftupperconnector.Visible = true
-
-                        drawtable.rightupperconnector.Color = esp_settings.Colors.SkeletonEnemyColor
-                        drawtable.rightupperconnector.Thickness = esp_settings.Other.SkeletonThickness
-                        drawtable.rightupperconnector.Transparency = esp_settings.Other.SkeletonTransparency
-                        drawtable.rightupperconnector.Visible = true
-
-                        drawtable.leftlowerconnector.Color = esp_settings.Colors.SkeletonEnemyColor
-                        drawtable.leftlowerconnector.Thickness = esp_settings.Other.SkeletonThickness
-                        drawtable.leftlowerconnector.Transparency = esp_settings.Other.SkeletonTransparency
-                        drawtable.leftlowerconnector.Visible = true
-
-                        drawtable.rightlowerconnector.Color = esp_settings.Colors.SkeletonEnemyColor
-                        drawtable.rightlowerconnector.Thickness = esp_settings.Other.SkeletonThickness
-                        drawtable.rightlowerconnector.Transparency = esp_settings.Other.SkeletonTransparency
-                        drawtable.rightlowerconnector.Visible = true
-                    end
 
                     else
-                        drawtable.headline.Visible = false
-                        drawtable.torsoline.Visible = false
-                        drawtable.leftarmline.Visible = false
-                        drawtable.rightarmline.Visible = false
-                        drawtable.leftlegline.Visible = false
-                        drawtable.rightlegline.Visible = false
-
-                        drawtable.leftupperconnector.Visible = false
-                        drawtable.rightupperconnector.Visible = false
-                        drawtable.leftlowerconnector.Visible = false
-                        drawtable.rightlowerconnector.Visible = false
+                        headline.Visible = false
+                        torsoline.Visible = false
+                        leftarmline.Visible = false
+                        rightarmline.Visible = false
+                        leftlegline.Visible = false
+                        rightlegline.Visible = false
+                        leftupperconnector.Visible = false
+                        rightupperconnector.Visible = false
+                        leftlowerconnector.Visible = false
+                        rightlowerconnector.Visible = false
                     end
                 else
-                    drawtable.headline.Visible = false
-                    drawtable.torsoline.Visible = false
-                    drawtable.leftarmline.Visible = false
-                    drawtable.rightarmline.Visible = false
-                    drawtable.leftlegline.Visible = false
-                    drawtable.rightlegline.Visible = false
-
-                    drawtable.leftupperconnector.Visible = false
-                    drawtable.rightupperconnector.Visible = false
-                    drawtable.leftlowerconnector.Visible = false
-                    drawtable.rightlowerconnector.Visible = false
+                    headline.Visible = false
+                    torsoline.Visible = false
+                    leftarmline.Visible = false
+                    rightarmline.Visible = false
+                    leftlegline.Visible = false
+                    rightlegline.Visible = false
+                    leftupperconnector.Visible = false
+                    rightupperconnector.Visible = false
+                    leftlowerconnector.Visible = false
+                    rightlowerconnector.Visible = false
                 end
             else
-                drawtable.headline.Visible = false
-                drawtable.torsoline.Visible = false
-                drawtable.leftarmline.Visible = false
-                drawtable.rightarmline.Visible = false
-                drawtable.leftlegline.Visible = false
-                drawtable.rightlegline.Visible = false
-
-                drawtable.leftupperconnector.Visible = false
-                drawtable.rightupperconnector.Visible = false
-                drawtable.leftlowerconnector.Visible = false
-                drawtable.rightlowerconnector.Visible = false
+                headline.Visible = false
+                torsoline.Visible = false
+                leftarmline.Visible = false
+                rightarmline.Visible = false
+                leftlegline.Visible = false
+                rightlegline.Visible = false
+                leftupperconnector.Visible = false
+                rightupperconnector.Visible = false
+                leftlowerconnector.Visible = false
+                rightlowerconnector.Visible = false
             end
+        else
+            headline.Visible = false
+            torsoline.Visible = false
+            leftarmline.Visible = false
+            rightarmline.Visible = false
+            leftlegline.Visible = false
+            rightlegline.Visible = false
 
-            if esp_settings.Visuals.Names then
-                if utility:IsAlive(plr) then
+            leftupperconnector.Visible = false
+            rightupperconnector.Visible = false
+            leftlowerconnector.Visible = false
+            rightlowerconnector.Visible = false
+        end
+
+        if esp_settings.Visuals.Names then
+            if utility:IsAlive(plr) then
+                if LocalPlayer.Character and (utility:GetBodypart(plr, "torso").Position - LocalPlayer.Character.Torso.Position).Magnitude <= esp_settings.Other.MaxDistance then
                     local vec, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "head").Position)
                     if onscreen then
                         if plr.TeamColor == LocalPlayer.TeamColor then
@@ -731,7 +749,7 @@ function AddToRenderList(plr)
                             name.Font = esp_settings.Other.NameFontFamily
                             name.Visible = true
                         end
-                        
+
                     else
                         name.Visible = false
                     end
@@ -741,9 +759,13 @@ function AddToRenderList(plr)
             else
                 name.Visible = false
             end
+        else
+            name.Visible = false
+        end
 
-            if esp_settings.Visuals.Distances then
-                if utility:IsAlive(plr) then
+        if esp_settings.Visuals.Distances then
+            if utility:IsAlive(plr) then
+                if LocalPlayer.Character and (utility:GetBodypart(plr, "torso").Position - LocalPlayer.Character.Torso.Position).Magnitude <= esp_settings.Other.MaxDistance then
                     local vec, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "head").Position)
                     if onscreen then
                         distance.Position = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0)))
@@ -775,19 +797,22 @@ function AddToRenderList(plr)
             else
                 distance.Visible = false
             end
+        else
+            distance.Visible = false
+        end
 
-            if esp_settings.Visuals.Healthbars then
-                if utility:IsAlive(plr) and utility:GetBodypart(plr, "torso") ~= nil then
-
+        if esp_settings.Visuals.Healthbars then
+            if utility:IsAlive(plr) and utility:GetBodypart(plr, "torso") ~= nil then
+                if LocalPlayer.Character and (utility:GetBodypart(plr, "torso").Position - LocalPlayer.Character.Torso.Position).Magnitude <= esp_settings.Other.MaxDistance then
                     local Health, MaxHealth = utility:GetHealth(plr)
                     local data = utility:GetBoundingBox(utility:GetCharacter(plr))
                     local Width, Height = math.floor(data.pos.topLeft.X - data.pos.topRight.X), math.floor(data.pos.topLeft.Y - data.pos.bottomLeft.Y)
-                
+
                     local BoxSize = Vector2.new(Width, Height)
 
                     local healthsize = Vector2.new(2, math.floor(BoxSize.Y * (Health / MaxHealth)))
                     local healthpos = Vector2.new(math.floor(data.pos.topLeft.X - ((4 + esp_settings.Other.HealthbarOffset))), math.floor(data.pos.bottomLeft.Y))
-                
+
                     local pos, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
                     if onscreen then
 
@@ -815,32 +840,36 @@ function AddToRenderList(plr)
             else
                 healthbar.Visible = false
             end
+        else
+            healthbar.Visible = false
+        end
 
-            if esp_settings.Visuals.Crosshair then
-                local center = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+        if esp_settings.Visuals.Crosshair then
+            local center = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
 
-                crosshairvertical.From = Vector2.new(center.X - esp_settings.Other.CrosshairSize, center.Y)
-                crosshairvertical.To = Vector2.new(center.X + esp_settings.Other.CrosshairSize, center.Y)
+            crosshairvertical.From = Vector2.new(center.X - esp_settings.Other.CrosshairSize, center.Y)
+            crosshairvertical.To = Vector2.new(center.X + esp_settings.Other.CrosshairSize, center.Y)
 
-                crosshairvertical.Thickness = esp_settings.Other.CrosshairThickness
-                crosshairvertical.Transparency = esp_settings.Other.CrosshairTransparency
-                crosshairvertical.Color = esp_settings.Colors.CrosshairColor
+            crosshairvertical.Thickness = esp_settings.Other.CrosshairThickness
+            crosshairvertical.Transparency = esp_settings.Other.CrosshairTransparency
+            crosshairvertical.Color = esp_settings.Colors.CrosshairColor
 
 
-                crosshairhorizontal.From = Vector2.new(center.X, center.Y - esp_settings.Other.CrosshairSize)
-                crosshairhorizontal.To = Vector2.new(center.X, center.Y + esp_settings.Other.CrosshairSize)
+            crosshairhorizontal.From = Vector2.new(center.X, center.Y - esp_settings.Other.CrosshairSize)
+            crosshairhorizontal.To = Vector2.new(center.X, center.Y + esp_settings.Other.CrosshairSize)
 
-                crosshairhorizontal.Thickness = esp_settings.Other.CrosshairThickness
-                crosshairhorizontal.Transparency = esp_settings.Other.CrosshairTransparency
-                crosshairhorizontal.Color = esp_settings.Colors.CrosshairColor
+            crosshairhorizontal.Thickness = esp_settings.Other.CrosshairThickness
+            crosshairhorizontal.Transparency = esp_settings.Other.CrosshairTransparency
+            crosshairhorizontal.Color = esp_settings.Colors.CrosshairColor
 
-                crosshairvertical.Visible = true
-                crosshairhorizontal.Visible = true
-            else
-                crosshairhorizontal.Visible = false
-                crosshairvertical.Visible = false
-            end
-            task.wait(math.clamp(esp_settings.Other.RefreshRate / 100, 0, 9e9))
+            crosshairvertical.Visible = true
+            crosshairhorizontal.Visible = true
+        else
+            crosshairhorizontal.Visible = false
+            crosshairvertical.Visible = false
+        end
+
+        task.wait(10)
         end)
     end
 end
@@ -931,11 +960,11 @@ task.spawn(function()
     for i,v in pairs(players:GetPlayers()) do
         AddToRenderList(v)
     end
-    
+
     players.PlayerAdded:Connect(function(player)
         AddToRenderList(player)
     end)
-    
+
     players.PlayerRemoving:Connect(function(player)
         RemoveFromRenderList(player)
     end)
@@ -950,7 +979,7 @@ task.spawn(function()
             AddWeaponsToRenderList(gun)
         end
     end)
-    
+
     game:GetService("Workspace").Ignore.GunDrop.ChildRemoved:Connect(function(gun)
         RemoveWeaponFromRenderList(gun)
     end)
