@@ -1,6 +1,7 @@
 ---------------------------------------------
---             VERSION 1.1.7               --
+--             VERSION 1.1.8               --
 ---------------------------------------------
+
 local LocalPlayer = game.Players.LocalPlayer
 local players = game.Players
 local rs = game:GetService("RunService")
@@ -250,7 +251,9 @@ defaultsettings = {
         CrosshairThickness = 1,
         CrosshairTransparency = 1,
 
-        MaxDistance = 1000
+        MaxDistance = 1000,
+
+        Refreshtime = 5
     }
 }
 
@@ -443,8 +446,15 @@ function AddToRenderList(plr)
         drawingshit[plr.Name].crosshairvertical = crosshairvertical
         drawingshit[plr.Name].crosshairhorizontal = crosshairhorizontal
 
+        local CanRun = true
+
         rs:BindToRenderStep(plr.Name .. "Mika Esp", 1, function()
 
+            if (not CanRun) then
+                return
+            end
+
+            CanRun = false
             if esp_settings.Visuals.Tracers then
                 if utility:IsAlive(plr) then
                     if LocalPlayer.Character and (utility:GetBodypart(plr, "torso").Position - LocalPlayer.Character.Torso.Position).Magnitude <= esp_settings.Other.MaxDistance then
@@ -869,7 +879,9 @@ function AddToRenderList(plr)
             crosshairvertical.Visible = false
         end
 
-        task.wait(10)
+        task.wait(math.clamp(esp_settings.Other.Refreshtime / 100, 0, 9e9))
+
+        CanRun = true
         end)
     end
 end
