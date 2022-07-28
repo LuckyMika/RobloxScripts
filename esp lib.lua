@@ -19,37 +19,16 @@ do
     for i = #gc, 1, -1 do
         local v = gc[i]
         local type = type(v)
-        if type == 'function' then
-            if debug.getinfo(v).name == "loadmodules" then
-                client.loadmodules = v
-            end
-        end
         if type == "table" then
-            if (rawget(v, 'send')) then
-                client.network = v
-            elseif (rawget(v, 'basecframe')) then
-                client.camera = v
-            elseif (rawget(v, "gammo")) then
-                client.gamelogic = v
-            elseif (rawget(v, "getbodyparts")) then
+            if (rawget(v, "getbodyparts")) then
                 client.replication = v
                 client.replication.bodyparts = debug.getupvalue(client.replication.getbodyparts, 1)
-            elseif (rawget(v, "updateammo")) then
-                client.hud = v
-            elseif (rawget(v, "setbasewalkspeed")) then
-                client.char = v
-            elseif (rawget(v, "getscale")) then
-                client.uiscaler = v
-            end
-            if rawget(v, 'player') then
-                table.insert(animations, v)
             end
 
 
         end
     end
 end
-
 
 function utility:IsAlive(player)
     if client.replication.bodyparts[player] and client.replication.bodyparts[player].head then
