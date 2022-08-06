@@ -1,5 +1,5 @@
 ---------------------------------------------
---             VERSION 1.2.3               --
+--             VERSION 1.2.4               --
 ---------------------------------------------
 
 local LocalPlayer = game.Players.LocalPlayer
@@ -248,7 +248,7 @@ function parseOption(option)
     end
 end
 
-function updateComponent(component, option, value)
+function library:updateComponent(component, option, value)
     if component ~= nil and option ~= nil and value ~= nil then
         for i,v in pairs(drawingshit) do
             if component == "Crosshair" then
@@ -897,7 +897,7 @@ end
 function library:UpdateVisual(visual, option, value)
     assert(esp_settings[visual][option] ~= nil, "This option doesn't exist!")
     esp_settings[visual][option] = value
-    updateComponent(visual, parseOption(option), value)
+    library:updateComponent(visual, parseOption(option), value)
 end
 
 return library
