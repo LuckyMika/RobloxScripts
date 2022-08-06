@@ -1,11 +1,12 @@
 ---------------------------------------------
---             VERSION 1.2.2               --
+--             VERSION 1.2.3               --
 ---------------------------------------------
 
 local LocalPlayer = game.Players.LocalPlayer
 local players = game.Players
 local rs = game:GetService("RunService")
 local Camera = workspace.CurrentCamera
+-- Phantom Forces sucks i wanna kms
 
 local utility = {}
 
@@ -430,10 +431,10 @@ function AddToRenderList(plr)
                         local pos, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
                         if onscreen then
                             if plr.TeamColor == LocalPlayer.TeamColor then
-                                if esp_settings.Teams.Boxes then
+                                if esp_settings.Boxes.Teamcheck then
                                     box.Size = boxsize
                                     box.Position = boxpos
-                                    box.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Boxes.TeamColor or esp_settings.Boxes.EnemyColor
+                                    box.Color = esp_settings.Boxes.TeamColor
                                     box.Visible = true
                                 else
                                     box.Visible = false
@@ -441,7 +442,7 @@ function AddToRenderList(plr)
                             else
                                 box.Size = boxsize
                                 box.Position = boxpos
-                                box.Color = plr.TeamColor == LocalPlayer.TeamColor and esp_settings.Colors.BoxTeamColor or esp_settings.Boxes.EnemyColor
+                                box.Color = esp_settings.Boxes.EnemyColor
                                 box.Visible = true
                             end
                         else
