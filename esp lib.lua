@@ -1,5 +1,5 @@
 ---------------------------------------------
---             VERSION 1.2.6               --
+--             VERSION 1.2.7               --
 ---------------------------------------------
 
 local LocalPlayer = game.Players.LocalPlayer
@@ -247,7 +247,7 @@ function parseOption(option)
     elseif option:find("FontFamily") then
         return option:gsub("FontFamily", "Font")
     else
-        return nil
+        return option
     end
 end
 
@@ -441,18 +441,19 @@ function AddToRenderList(plr)
                         local boxsize = Vector2.new(Width, Height)
                         local pos, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
                         if onscreen then
+                            box.Size = boxsize
+                            box.Position = boxpos
                             if plr.TeamColor == LocalPlayer.TeamColor then
                                 if esp_settings.Boxes.Teamcheck then
                                     box.Color = esp_settings.Boxes.TeamColor
+                                    box.Visible = true
                                 else
                                     box.Visible = false
                                 end
                             else
                                 box.Color = esp_settings.Boxes.EnemyColor
+                                box.Visible = true
                             end
-                            box.Size = boxsize
-                            box.Position = boxpos
-                            box.Visible = true
                         else
                             box.Visible = false
                         end
@@ -471,16 +472,17 @@ function AddToRenderList(plr)
                         local vec, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, esp_settings.Tracers.Part).Position)
                         if onscreen then
                             if plr.TeamColor == LocalPlayer.TeamColor then
+                                tracer.To = Vector2.new(vec.X, vec.Y)
                                 if esp_settings.Tracers.Teamcheck then
                                     tracer.Color = esp_settings.Tracers.TeamColor
+                                    tracer.Visible = true
                                 else
                                     tracer.Visible = false
                                 end
                             else
                                 tracer.Color = esp_settings.Tracers.EnemyColor
+                                tracer.Visible = true
                             end
-                            tracer.To = Vector2.new(vec.X, vec.Y)
-                            tracer.Visible = true
                         else
                             tracer.Visible = false
                         end
@@ -635,17 +637,17 @@ function AddToRenderList(plr)
                     local vec, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "head").Position)
                     if onscreen then
                         if plr.TeamColor == LocalPlayer.TeamColor then
+                            name.Position = Vector2.new(vec.X, vec.Y)
                             if esp_settings.Names.Teamcheck then
                                 name.Color = esp_settings.Names.TeamColor
+                                name.Visible = true
                             else
                                 name.Visible = false
                             end
                         else
                             name.Color = esp_settings.Names.EnemyColor
+                            name.Visible = true
                         end
-                        name.Position = Vector2.new(vec.X, vec.Y)
-                        name.Visible = true
-
                     else
                         name.Visible = false
                     end
@@ -665,17 +667,18 @@ function AddToRenderList(plr)
                     local vec, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "head").Position)
                     if onscreen then
                         distance.Position = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0)))
+                        distance.Text = tostring(round((LocalPlayer.Character.Head.Position - utility:GetBodypart(plr, "head").Position).magnitude)) .. "Studs"
                         if plr.TeamColor == LocalPlayer.TeamColor then
                             if esp_settings.Distances.Teamcheck then
                                 distance.Color = esp_settings.Distances.TeamColor
+                                distance.Visible = true
                             else
                                 distance.Visible = false
                             end
                         else
                             distance.Color = esp_settings.Distances.EnemyColor
-                        end
-                        distance.Text = tostring(round((LocalPlayer.Character.Head.Position - utility:GetBodypart(plr, "head").Position).magnitude)) .. "Studs"
-                        distance.Visible = true
+                            distance.Visible = true
+                    end
                     else
                         distance.Visible = false
                     end
@@ -692,31 +695,31 @@ function AddToRenderList(plr)
         if esp_settings.Healthbars.Toggled then
             if utility:IsAlive(plr) and utility:GetBodypart(plr, "torso") ~= nil then
                 if LocalPlayer.Character and (utility:GetBodypart(plr, "torso").Position - LocalPlayer.Character.Torso.Position).Magnitude <=esp_settings.Performance.MaxDistance then
-                    local Health, MaxHealth = utility:GetHealth(plr)
-                    local data = utility:GetBoundingBox(utility:GetCharacter(plr))
-                    local Width, Height = math.floor(data.pos.topLeft.X - data.pos.topRight.X), math.floor(data.pos.topLeft.Y - data.pos.bottomLeft.Y)
-
-                    local BoxSize = Vector2.new(Width, Height)
-
-                    local healthsize = Vector2.new(2, math.floor(BoxSize.Y * (Health / MaxHealth)))
-                    local healthpos = Vector2.new(math.floor(data.pos.topLeft.X - ((4 + esp_settings.Healthbars.Offset))), math.floor(data.pos.bottomLeft.Y))
 
                     local pos, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
                     if onscreen then
+                        local Health, MaxHealth = utility:GetHealth(plr)
+                        local data = utility:GetBoundingBox(utility:GetCharacter(plr))
+                        local Width, Height = math.floor(data.pos.topLeft.X - data.pos.topRight.X), math.floor(data.pos.topLeft.Y - data.pos.bottomLeft.Y)
 
+                        local BoxSize = Vector2.new(Width, Height)
+
+                        local healthsize = Vector2.new(2, math.floor(BoxSize.Y * (Health / MaxHealth)))
+                        local healthpos = Vector2.new(math.floor(data.pos.topLeft.X - ((4 + esp_settings.Healthbars.Offset))), math.floor(data.pos.bottomLeft.Y))
+                        healthbar.Size = healthsize
+                        healthbar.Position = healthpos
                         if plr.TeamColor == LocalPlayer.TeamColor then
                             if esp_settings.Healthbars.Teamcheck then
                                 healthbar.Color = esp_settings.Healthbars.EmptyColor:Lerp(esp_settings.Healthbars.FullColor, utility:GetHealth(plr)/100);
+                                healthbar.Visible = true
                             else
                                 healthbar.Visible = false
                             end
                         else
                             healthbar.Color = esp_settings.Healthbars.EmptyColor:Lerp(esp_settings.Healthbars.FullColor, utility:GetHealth(plr)/100);
+                            healthbar.Visible = true
                         end
 
-                        healthbar.Size = healthsize
-                        healthbar.Position = healthpos
-                        healthbar.Visible = true
                     else
                         healthbar.Visible = false
                     end
