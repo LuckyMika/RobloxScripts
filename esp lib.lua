@@ -1,5 +1,5 @@
 ---------------------------------------------
---             VERSION 1.2.4               --
+--             VERSION 1.2.5               --
 ---------------------------------------------
 
 local LocalPlayer = game.Players.LocalPlayer
@@ -248,7 +248,7 @@ function parseOption(option)
     end
 end
 
-function library:updateComponent(component, option, value)
+function updateComponent(component, option, value)
     if component ~= nil and option ~= nil and value ~= nil then
         for i,v in pairs(drawingshit) do
             if component == "Crosshair" then
@@ -538,7 +538,7 @@ function AddToRenderList(plr)
 
                     if onScreen then
                         if plr.TeamColor == LocalPlayer.TeamColor then
-                            if esp_settings.Teams.Skeletons then
+                            if esp_settings.Skeletons.Teamcheck then
                                 leftupperconnector.Color = esp_settings.Skeletons.TeamColor
                                 rightupperconnector.Color = esp_settings.Skeletons.TeamColor
                                 leftlowerconnector.Color = esp_settings.Skeletons.TeamColor
@@ -650,7 +650,7 @@ function AddToRenderList(plr)
                     local vec, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "head").Position)
                     if onscreen then
                         if plr.TeamColor == LocalPlayer.TeamColor then
-                            if esp_settings.Teams.Names then
+                            if esp_settings.Names.Teamcheck then
                                 name.Position = Vector2.new(vec.X, vec.Y)
                                 name.Color = esp_settings.Names.TeamColor
                                 name.Visible = true
@@ -683,7 +683,7 @@ function AddToRenderList(plr)
                     if onscreen then
                         distance.Position = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0)))
                         if plr.TeamColor == LocalPlayer.TeamColor then
-                            if esp_settings.Teams.Distances then
+                            if esp_settings.Distances.Teamcheck then
                                 distance.Text = tostring(round((LocalPlayer.Character.Head.Position - utility:GetBodypart(plr, "head").Position).magnitude)) .. "Studs"
                                 distance.Color = esp_settings.Distances.TeamColor
                                 distance.Visible = true
@@ -724,7 +724,7 @@ function AddToRenderList(plr)
                     if onscreen then
 
                         if plr.TeamColor == LocalPlayer.TeamColor then
-                            if esp_settings.Teams.Healthbars then
+                            if esp_settings.Healthbars.Teamcheck then
                                 healthbar.Size = healthsize
                                 healthbar.Position = healthpos
                                 healthbar.Visible = true
@@ -897,7 +897,7 @@ end
 function library:UpdateVisual(visual, option, value)
     assert(esp_settings[visual][option] ~= nil, "This option doesn't exist!")
     esp_settings[visual][option] = value
-    library:updateComponent(visual, parseOption(option), value)
+    updateComponent(visual, parseOption(option), value)
 end
 
 return library
