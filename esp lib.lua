@@ -1,5 +1,5 @@
 ---------------------------------------------
---             VERSION 1.2.5               --
+--             VERSION 1.2.6               --
 ---------------------------------------------
 
 local LocalPlayer = game.Players.LocalPlayer
@@ -233,6 +233,9 @@ end
 
 
 local drawingshit = {}
+local idtable = {}
+local weapontable = {}
+local counter = 0
 
 function parseOption(option)
     if option:find("Toggled") then
@@ -250,23 +253,31 @@ end
 
 function updateComponent(component, option, value)
     if component ~= nil and option ~= nil and value ~= nil then
-        for i,v in pairs(drawingshit) do
-            if component == "Crosshair" then
-                v["crosshairvertical"][option] = value
-                v["crosshairhorizontal"][option] = value
-            elseif component == "Skeletons" then
-                v["headline"][option] = value
-                v["torsoline"][option] = value
-                v["leftarmline"][option] = value
-                v["rightarmline"][option] = value
-                v["leftlegline"][option] = value
-                v["rightlegline"][option] = value
-                v["leftupperconnector"][option] = value
-                v["rightupperconnector"][option] = value
-                v["leftlowerconnector"][option] = value
-                v["rightlowerconnector"][option] = value
-            else
-                v[component][option] = value
+        if component == "Weapons" then
+            for i,v in pairs(weapontable) do
+                v[option] = value
+            end
+        else
+            for i,v in pairs(drawingshit) do
+                if component == "Crosshair" then
+                    if option ~= "Size" then
+                        v["crosshairvertical"][option] = value
+                        v["crosshairhorizontal"][option] = value
+                    end
+                elseif component == "Skeletons" then
+                    v["headline"][option] = value
+                    v["torsoline"][option] = value
+                    v["leftarmline"][option] = value
+                    v["rightarmline"][option] = value
+                    v["leftlegline"][option] = value
+                    v["rightlegline"][option] = value
+                    v["leftupperconnector"][option] = value
+                    v["rightupperconnector"][option] = value
+                    v["leftlowerconnector"][option] = value
+                    v["rightlowerconnector"][option] = value
+                else
+                    v[component][option] = value
+                end
             end
         end
     end
@@ -432,19 +443,16 @@ function AddToRenderList(plr)
                         if onscreen then
                             if plr.TeamColor == LocalPlayer.TeamColor then
                                 if esp_settings.Boxes.Teamcheck then
-                                    box.Size = boxsize
-                                    box.Position = boxpos
                                     box.Color = esp_settings.Boxes.TeamColor
-                                    box.Visible = true
                                 else
                                     box.Visible = false
                                 end
                             else
-                                box.Size = boxsize
-                                box.Position = boxpos
                                 box.Color = esp_settings.Boxes.EnemyColor
-                                box.Visible = true
                             end
+                            box.Size = boxsize
+                            box.Position = boxpos
+                            box.Visible = true
                         else
                             box.Visible = false
                         end
@@ -464,17 +472,15 @@ function AddToRenderList(plr)
                         if onscreen then
                             if plr.TeamColor == LocalPlayer.TeamColor then
                                 if esp_settings.Tracers.Teamcheck then
-                                    tracer.To = Vector2.new(vec.X, vec.Y)
                                     tracer.Color = esp_settings.Tracers.TeamColor
-                                    tracer.Visible = true
                                 else
                                     tracer.Visible = false
                                 end
                             else
-                                tracer.To = Vector2.new(vec.X, vec.Y)
                                 tracer.Color = esp_settings.Tracers.EnemyColor
-                                tracer.Visible = true
                             end
+                            tracer.To = Vector2.new(vec.X, vec.Y)
+                            tracer.Visible = true
                         else
                             tracer.Visible = false
                         end
@@ -494,49 +500,29 @@ function AddToRenderList(plr)
                 if LocalPlayer.Character and (utility:GetBodypart(plr, "torso").Position - LocalPlayer.Character.Torso.Position).Magnitude <= esp_settings.Performance.MaxDistance then
                     local Vector, onScreen = Camera:worldToViewportPoint(utility:GetBodypart(plr, "torso").Position)
 
-                    headline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Head").Position)) -- Head
-
-                    torsoline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- Upper Torso
-
-                    leftarmline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "larm").Position + Vector3.new(0,-1,0))) -- LowerLeftArm
-
-                    rightarmline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rarm").Position + Vector3.new(0,-1,0))) -- LowerRightarm
-
-                    leftlegline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "lleg").Position + Vector3.new(0,-1,0))) -- LowerLeftLeg
-
-                    rightlegline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rleg").Position + Vector3.new(0,-1,0))) -- LowerRightLeg
-
-                    leftupperconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "larm").Position + Vector3.new(0,1,0))) -- UpperLeftArm
-
-                    rightupperconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rarm").Position + Vector3.new(0,1,0))) -- UpperRightArm
-
-                    leftlowerconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "lleg").Position + Vector3.new(0,1,0))) -- UpperLeftLeg
-
-                    rightlowerconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rleg").Position + Vector3.new(0,1,0))) -- UpperRightLeg
-
-
-
-                    headline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- Upper Torso
-
-                    torsoline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0))) -- Lower Torso
-
-                    leftarmline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "larm").Position + Vector3.new(0,1,0))) -- UpperLeftArm
-
-                    rightarmline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rarm").Position + Vector3.new(0,1,0))) -- UpperRightArm
-
-                    leftlegline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "lleg").Position + Vector3.new(0,1,0))) -- UpperLeftLeg
-
-                    rightlegline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rleg").Position + Vector3.new(0,1,0))) -- UpperRightLeg
-
-                    rightupperconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- UpperTorso
-
-                    rightlowerconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0))) -- LowerTorso
-
-                    leftupperconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- UpperTorso
-
-                    leftlowerconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0))) -- LowerTorso
 
                     if onScreen then
+                        headline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Head").Position)) -- Head
+                        torsoline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- Upper Torso
+                        leftarmline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "larm").Position + Vector3.new(0,-1,0))) -- LowerLeftArm
+                        rightarmline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rarm").Position + Vector3.new(0,-1,0))) -- LowerRightarm
+                        leftlegline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "lleg").Position + Vector3.new(0,-1,0))) -- LowerLeftLeg
+                        rightlegline.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rleg").Position + Vector3.new(0,-1,0))) -- LowerRightLeg
+                        leftupperconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "larm").Position + Vector3.new(0,1,0))) -- UpperLeftArm
+                        rightupperconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rarm").Position + Vector3.new(0,1,0))) -- UpperRightArm
+                        leftlowerconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "lleg").Position + Vector3.new(0,1,0))) -- UpperLeftLeg
+                        rightlowerconnector.From = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rleg").Position + Vector3.new(0,1,0))) -- UpperRightLeg
+
+                        headline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- Upper Torso
+                        torsoline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0))) -- Lower Torso
+                        leftarmline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "larm").Position + Vector3.new(0,1,0))) -- UpperLeftArm
+                        rightarmline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rarm").Position + Vector3.new(0,1,0))) -- UpperRightArm
+                        leftlegline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "lleg").Position + Vector3.new(0,1,0))) -- UpperLeftLeg
+                        rightlegline.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "rleg").Position + Vector3.new(0,1,0))) -- UpperRightLeg
+                        rightupperconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- UpperTorso
+                        rightlowerconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0))) -- LowerTorso
+                        leftupperconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,1,0))) -- UpperTorso
+                        leftlowerconnector.To = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0))) -- LowerTorso
                         if plr.TeamColor == LocalPlayer.TeamColor then
                             if esp_settings.Skeletons.Teamcheck then
                                 leftupperconnector.Color = esp_settings.Skeletons.TeamColor
@@ -593,7 +579,6 @@ function AddToRenderList(plr)
                             headline.Visible = true
                             rightlowerconnector.Visible = true
                         end
-
                     else
                         headline.Visible = false
                         torsoline.Visible = false
@@ -651,17 +636,15 @@ function AddToRenderList(plr)
                     if onscreen then
                         if plr.TeamColor == LocalPlayer.TeamColor then
                             if esp_settings.Names.Teamcheck then
-                                name.Position = Vector2.new(vec.X, vec.Y)
                                 name.Color = esp_settings.Names.TeamColor
-                                name.Visible = true
                             else
                                 name.Visible = false
                             end
                         else
-                            name.Position = Vector2.new(vec.X, vec.Y)
                             name.Color = esp_settings.Names.EnemyColor
-                            name.Visible = true
                         end
+                        name.Position = Vector2.new(vec.X, vec.Y)
+                        name.Visible = true
 
                     else
                         name.Visible = false
@@ -684,17 +667,15 @@ function AddToRenderList(plr)
                         distance.Position = getpos(Camera:WorldToViewportPoint(utility:GetBodypart(plr, "Torso").Position + Vector3.new(0,-1,0)))
                         if plr.TeamColor == LocalPlayer.TeamColor then
                             if esp_settings.Distances.Teamcheck then
-                                distance.Text = tostring(round((LocalPlayer.Character.Head.Position - utility:GetBodypart(plr, "head").Position).magnitude)) .. "Studs"
                                 distance.Color = esp_settings.Distances.TeamColor
-                                distance.Visible = true
                             else
                                 distance.Visible = false
                             end
                         else
-                            distance.Text = tostring(round((LocalPlayer.Character.Head.Position - utility:GetBodypart(plr, "head").Position).magnitude)) .. "Studs"
                             distance.Color = esp_settings.Distances.EnemyColor
-                            distance.Visible = true
                         end
+                        distance.Text = tostring(round((LocalPlayer.Character.Head.Position - utility:GetBodypart(plr, "head").Position).magnitude)) .. "Studs"
+                        distance.Visible = true
                     else
                         distance.Visible = false
                     end
@@ -725,19 +706,17 @@ function AddToRenderList(plr)
 
                         if plr.TeamColor == LocalPlayer.TeamColor then
                             if esp_settings.Healthbars.Teamcheck then
-                                healthbar.Size = healthsize
-                                healthbar.Position = healthpos
-                                healthbar.Visible = true
                                 healthbar.Color = esp_settings.Healthbars.EmptyColor:Lerp(esp_settings.Healthbars.FullColor, utility:GetHealth(plr)/100);
                             else
                                 healthbar.Visible = false
                             end
                         else
-                            healthbar.Size = healthsize
-                            healthbar.Position = healthpos
-                            healthbar.Visible = true
                             healthbar.Color = esp_settings.Healthbars.EmptyColor:Lerp(esp_settings.Healthbars.FullColor, utility:GetHealth(plr)/100);
                         end
+
+                        healthbar.Size = healthsize
+                        healthbar.Position = healthpos
+                        healthbar.Visible = true
                     else
                         healthbar.Visible = false
                     end
@@ -776,15 +755,12 @@ function AddToRenderList(plr)
             crosshairvertical.Visible = false
         end
 
-        task.wait(math.clamp(esp_settings.Performance.Refreshtime / 100, 0, 9e9))
+        task.wait(math.clamp(esp_settings.Performance.Refreshtime / 1000, 0, 9e9))
 
         CanRun = true
     end)
 end
 end
-local idtable = {}
-local weapontable = {}
-local counter = 0
 
 function library:RefreshESP()
     for i,v in pairs(game:GetService("Players"):GetPlayers()) do
