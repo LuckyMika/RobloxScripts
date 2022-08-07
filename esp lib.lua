@@ -255,16 +255,18 @@ function updateComponent(component, option, value)
     if component ~= nil and option ~= nil and value ~= nil then
         if component == "Weapons" then
             for i,v in pairs(weapontable) do
-                v[option] = value
+                if v[option] then
+                    v[option] = value
+                end
             end
         else
             for i,v in pairs(drawingshit) do
                 if component == "Crosshair" then
-                    if option ~= "Size" then
+                    if option ~= "Size" and v["crosshairvertical"][option] ~= nil then
                         v["crosshairvertical"][option] = value
                         v["crosshairhorizontal"][option] = value
                     end
-                elseif component == "Skeletons" then
+                elseif component == "Skeletons" and v["headline"][option] ~= nil then
                     v["headline"][option] = value
                     v["torsoline"][option] = value
                     v["leftarmline"][option] = value
@@ -276,7 +278,9 @@ function updateComponent(component, option, value)
                     v["leftlowerconnector"][option] = value
                     v["rightlowerconnector"][option] = value
                 else
-                    v[component][option] = value
+                    if v[component][option] then
+                        v[component][option] = value
+                    end
                 end
             end
         end
