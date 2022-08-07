@@ -636,8 +636,8 @@ function AddToRenderList(plr)
                 if LocalPlayer.Character and (utility:GetBodypart(plr, "torso").Position - LocalPlayer.Character.Torso.Position).Magnitude <=esp_settings.Performance.MaxDistance then
                     local vec, onscreen = Camera:WorldToViewportPoint(utility:GetBodypart(plr, "head").Position)
                     if onscreen then
+                        name.Position = Vector2.new(vec.X, vec.Y)
                         if plr.TeamColor == LocalPlayer.TeamColor then
-                            name.Position = Vector2.new(vec.X, vec.Y)
                             if esp_settings.Names.Teamcheck then
                                 name.Color = esp_settings.Names.TeamColor
                                 name.Visible = true
