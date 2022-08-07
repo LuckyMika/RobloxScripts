@@ -255,7 +255,7 @@ function updateComponent(component, option, value)
     if component ~= nil and option ~= nil and value ~= nil then
         if component == "Weapons" then
             for i,v in pairs(weapontable) do
-                if v[option] then
+                if v[option] ~= nil then
                     v[option] = value
                 end
             end
@@ -278,7 +278,7 @@ function updateComponent(component, option, value)
                     v["leftlowerconnector"][option] = value
                     v["rightlowerconnector"][option] = value
                 else
-                    if v[component][option] then
+                    if v[component][option] ~= nil then
                         v[component][option] = value
                     end
                 end
